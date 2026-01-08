@@ -59,6 +59,11 @@ Sets the speed display mode and updates the speed unit display.
 - **Parameters:**
   - `mode` (number): The speed mode to set (0: KMH, 1: MPH, 2: Knots).
 
+#### `setOdometer(distance)`
+Sets the Odometer value of the Speedometer.
+- **Parameters:**
+  - `distance` (number): The distance in miles.
+
 ## Usage
 
 1. Include the script in your HTML file:
@@ -78,6 +83,7 @@ Sets the speed display mode and updates the speed unit display.
    setLeftIndicator(true); // Turn on left indicator
    setSeatbelts(true); // Seatbelts fastened
    setSpeedMode(1); // Set to MPH
+   setOdometer(123.4); // 123.4 Miles
    ```
 
 ## Dependencies

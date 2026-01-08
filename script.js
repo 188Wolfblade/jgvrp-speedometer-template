@@ -105,12 +105,15 @@ function setSeatbelts(state) {
  */
 function setSpeedMode(mode) {
     speedMode = mode;
-    switch(mode)
-    {
-        case 1: elements.speedMode.innerText = 'MPH'; break;
-        case 2: elements.speedMode.innerText = 'Knots'; break;
-        default: elements.speedMode.innerText = 'KMH';
-    }
+}
+
+/**
+ * Updates the odometer display.
+ * @param {number} distance - The distance in miles.
+ */
+function setOdometer(distance)
+{
+    elements.odometer.innerText = distance.toFixed(1) + ' Miles';
 }
 
 // Wait for the DOM to be fully loaded
@@ -125,6 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
         headlights: document.getElementById('headlights'),
         indicators: document.getElementById('indicators'),
         seatbelts: document.getElementById('seatbelts'),
-        speedMode: document.getElementById('speed-mode'),
+        odometer: document.getElementById('odometer'),
     };
 });
