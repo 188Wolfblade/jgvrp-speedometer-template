@@ -1,108 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>BMW M Track Speedometer</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<title>BMW M Track Speedometer</title>
+
+<style>
+body {
+  margin: 0;
+  background: transparent;
+  font-family: Arial, sans-serif;
+}
+
+#hud {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #120000 40%, #000 75%);
+  box-shadow: inset 0 0 22px rgba(255,40,40,0.35),
+              0 0 28px rgba(255,40,40,0.25);
+  color: white;
+}
+
+/* RPM */
+#rpmCanvas {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+#rpmText {
+  position: absolute;
+  top: 62px;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* SPEED */
+#speedBox {
+  position: absolute;
+  bottom: 68px;
+  width: 100%;
+  text-align: center;
+}
+
+#speed {
+  font-size: 44px;
+  font-weight: 800;
+}
+
+#unit {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* GEAR */
+#gear {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #ff2a2a;
+  text-shadow: 0 0 10px #ff2a2a;
+}
+
+.flash {
+  color: white;
+}
+
+/* BARS */
+#bars {
+  position: absolute;
+  bottom: 28px;
+  width: 80%;
+  left: 10%;
+}
+
+.barWrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.icon {
+  width: 18px;
+  font-size: 12px;
+}
+
+.bar {
+  flex: 1;
+  height: 5px;
+  background: #250000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fillFuel {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5555, #ff0000);
+}
+
+.fillEngine {
+  height: 100%;
+  background: linear-gradient(90deg, #ffaa00, #ff2a2a);
+}
+
+/* ODO */
+#odo {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.6;
+}
+</style>
 </head>
+
 <body>
 
-<div id="bmw-speedo" class="m-track">
-
-  <!-- RPM ANALOG -->
+<div id="hud">
   <canvas id="rpmCanvas" width="220" height="220"></canvas>
+  <div id="rpmText">0 RPM</div>
 
-  <!-- RPM NUMERIC -->
-  <div id="rpm-num">0 RPM</div>
-
-  <!-- SPEED -->
-  <div id="speed-box">
+  <div id="speedBox">
     <div id="speed">0</div>
     <div id="unit">MPH</div>
   </div>
 
-  <!-- GEAR -->
   <div id="gear">N</div>
 
-  <!-- BARS -->
   <div id="bars">
-    <div class="bar-wrap">
+    <div class="barWrap">
       <span class="icon">⛽</span>
-      <div class="bar"><div class="bar-fill fuel" id="fuel-bar"></div></div>
+      <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
     </div>
-    <div class="bar-wrap">
+    <div class="barWrap">
       <span class="icon">🔧</span>
-      <div class="bar"><div class="bar-fill engine" id="engine-bar"></div></div>
+      <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
     </div>
   </div>
 
-  <!-- ODOMETER -->
   <div id="odo">ODO 0.0 mi</div>
-
 </div>
 
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM ===== */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
 let rpmSmooth = 0;
 
-function drawRPM(target = 0) {
-  rpmSmooth += (target - rpmSmooth) * 0.18;
+function drawRPM(ratio) {
+  rpmSmooth += (ratio - rpmSmooth) * 0.15;
 
+  const cx = 110, cy = 110, r = 90;
   ctx.clearRect(0,0,220,220);
-  ctx.lineWidth = 9;
 
-  const red = rpmSmooth > 0.8;
-  ctx.strokeStyle = red ? "#ff2a2a" : "#ff5555";
-  ctx.shadowBlur = red ? 22 : 10;
-  ctx.shadowColor = ctx.strokeStyle;
-
+  // outer ring
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 6;
   ctx.beginPath();
-  ctx.arc(110,110,95,Math.PI,Math.PI + Math.PI * rpmSmooth);
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
   ctx.stroke();
 
-  document.getElementById("rpm-num").innerText =
+  // ticks + numbers
+  for (let i = 0; i <= 8; i++) {
+    const ang = (-130 + i * 32.5) * Math.PI/180;
+    const red = i >= 7;
+    ctx.strokeStyle = red ? "#ff2a2a" : "#aaa";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(ang)*(r-8), cy + Math.sin(ang)*(r-8));
+    ctx.lineTo(cx + Math.cos(ang)*(r-2), cy + Math.sin(ang)*(r-2));
+    ctx.stroke();
+
+    ctx.fillStyle = "#aaa";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(i, cx + Math.cos(ang)*(r-18), cy + Math.sin(ang)*(r-18));
+  }
+
+  // needle
+  const needleAng = (-130 + rpmSmooth * 260) * Math.PI/180;
+  ctx.strokeStyle = "#ff2a2a";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(needleAng)*(r-20),
+             cy + Math.sin(needleAng)*(r-20));
+  ctx.stroke();
+
+  ctx.fillStyle = "#ff2a2a";
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI*2);
+  ctx.fill();
+
+  document.getElementById("rpmText").innerText =
     Math.round(rpmSmooth * 8000) + " RPM";
 }
 
-/* ===== SAFE OVERRIDES ===== */
-const _setRPM = window.setRPM;
-window.setRPM = (rpm) => { drawRPM(rpm); _setRPM(rpm); };
+/* SAFE OVERRIDES */
+const _rpm = window.setRPM;
+window.setRPM = v => { drawRPM(v); _rpm(v); };
 
-const _setSpeed = window.setSpeed;
-window.setSpeed = (s) => {
-  document.getElementById("speed").innerText = Math.round(s * 2.23694);
-  _setSpeed(s);
+const _spd = window.setSpeed;
+window.setSpeed = s => {
+  document.getElementById("speed").innerText = Math.round(s*2.23694);
+  _spd(s);
 };
 
-const _setGear = window.setGear;
-window.setGear = (g) => {
+const _gear = window.setGear;
+window.setGear = g => {
   const el = document.getElementById("gear");
   el.innerText = g;
   el.classList.add("flash");
   setTimeout(()=>el.classList.remove("flash"),150);
-  _setGear(g);
+  _gear(g);
 };
 
-const _setFuel = window.setFuel;
-window.setFuel = (f) => {
-  document.getElementById("fuel-bar").style.width = (f*100)+"%";
-  _setFuel(f);
+const _fuel = window.setFuel;
+window.setFuel = f => {
+  document.getElementById("fuelBar").style.width = (f*100)+"%";
+  _fuel(f);
 };
 
-const _setHealth = window.setHealth;
-window.setHealth = (h) => {
-  document.getElementById("engine-bar").style.width = (h*100)+"%";
-  _setHealth(h);
+const _health = window.setHealth;
+window.setHealth = h => {
+  document.getElementById("engineBar").style.width = (h*100)+"%";
+  _health(h);
 };
 
-const _setOdo = window.setOdometer;
-window.setOdometer = (d) => {
+const _odo = window.setOdometer;
+window.setOdometer = d => {
   document.getElementById("odo").innerText = "ODO " + d.toFixed(1) + " mi";
-  _setOdo(d);
+  _odo(d);
 };
 
 setSpeedMode(1); // MPH LOCK
