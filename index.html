@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW HUD Clean Final v2</title>
+<title>BMW HUD Clean Final v3</title>
 
 <style>
 body {
@@ -94,16 +94,31 @@ body {
 /* ===== BARS ===== */
 #bars {
   position: absolute;
-  bottom: 44px;
-  width: 80%;
-  left: 10%;
+  bottom: 42px;
+  width: 82%;
+  left: 9%;
+}
+
+/* BAR ROW WITH ICON */
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.barIcon {
+  font-size: 12px;
+  opacity: 0.85;
+  width: 14px;
+  text-align: center;
 }
 
 .bar {
+  flex: 1;
   height: 6px;
   background: #0a2438;
   border-radius: 6px;
-  margin-bottom: 6px;
   overflow: hidden;
 }
 
@@ -136,11 +151,18 @@ body {
       <div id="unit">MPH</div>
 
       <div id="bars">
-        <div class="bar">
-          <div id="fuelBar" class="fillFuel"></div>
+        <div class="barRow">
+          <span class="barIcon">⛽</span>
+          <div class="bar">
+            <div id="fuelBar" class="fillFuel"></div>
+          </div>
         </div>
-        <div class="bar">
-          <div id="engineBar" class="fillEngine"></div>
+
+        <div class="barRow">
+          <span class="barIcon">🔧</span>
+          <div class="bar">
+            <div id="engineBar" class="fillEngine"></div>
+          </div>
         </div>
       </div>
     </div>
