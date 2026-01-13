@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW HUD FINAL</title>
+<title>BMW HUD FINAL LOGIC FIX</title>
 
 <style>
 body { margin:0; background:transparent; font-family:Arial,sans-serif; }
@@ -16,19 +16,17 @@ body { margin:0; background:transparent; font-family:Arial,sans-serif; }
   align-items:flex-end;
 }
 
-.circle { position:relative; border-radius:50%; color:white; }
+.circle { border-radius:50%; position:relative; color:white; }
 
-/* ===== RPM ===== */
+/* RPM */
 #rpmCircle {
   width:150px; height:150px;
   background:radial-gradient(circle,#0a1a2a 40%,#000 75%);
 }
-
 #rpmCanvas { position:absolute; top:5px; left:5px; }
 
-/* ===== SPEED ===== */
+/* SPEED */
 #speedWrap { display:flex; flex-direction:column; align-items:center; }
-
 #speedCircle {
   width:220px; height:220px;
   background:radial-gradient(circle,#0a2238 35%,#000 80%);
@@ -45,26 +43,22 @@ body { margin:0; background:transparent; font-family:Arial,sans-serif; }
 }
 
 #unit {
-  position:absolute; top:110px; width:100%;
+  position:absolute; top:112px; width:100%;
   text-align:center; font-size:13px; opacity:.6;
 }
 
-/* ===== BARS ===== */
-#bars {
-  position:absolute; bottom:44px; width:80%; left:10%;
-}
-
+/* Bars */
+#bars { position:absolute; bottom:44px; width:80%; left:10%; }
 .bar { height:6px; background:#0a2438; border-radius:6px; margin-bottom:6px; }
 .fillFuel { height:100%; background:#4db8ff; }
 .fillEngine { height:100%; background:#6fd0ff; }
 
-/* ===== STATUS ICON ===== */
+/* Status Icons */
 #status { margin-top:6px; display:flex; gap:14px; font-size:16px; }
 
-.off { color:#555; }
-.on-blue { color:#6fd0ff; text-shadow:0 0 8px #6fd0ff; }
-.on-yellow { color:#ffd000; text-shadow:0 0 8px #ffd000; }
-.on-red { color:#ff4d4d; text-shadow:0 0 8px #ff4d4d; }
+.white { color:#bbb; }
+.green { color:#3cff8f; text-shadow:0 0 8px #3cff8f; }
+.yellow { color:#ffd000; text-shadow:0 0 8px #ffd000; }
 .blink { opacity:.2; }
 </style>
 </head>
@@ -91,10 +85,10 @@ body { margin:0; background:transparent; font-family:Arial,sans-serif; }
     </div>
 
     <div id="status">
-      <span id="engineIcon" class="off">🔧</span>
-      <span id="lightIcon" class="off">💡</span>
-      <span id="leftIcon" class="off">◀️</span>
-      <span id="rightIcon" class="off">▶️</span>
+      <span id="engineIcon" class="white">🔧</span>
+      <span id="lightIcon"  class="white">💡</span>
+      <span id="leftIcon"   class="white">◀️</span>
+      <span id="rightIcon"  class="white">▶️</span>
     </div>
 
   </div>
@@ -103,20 +97,22 @@ body { margin:0; background:transparent; font-family:Arial,sans-serif; }
 <script src="script.js"></script>
 
 <script>
-/* ================= STATE ================= */
-let engineOn=false, speedMPH=0, gearRaw=0;
-let health=1, leftOn=false, rightOn=false, blinkTimer=null;
+/* ===== STATE ===== */
+let engineOn=false;
+let speedMPH=0;
+let gearRaw=0;
+let leftOn=false, rightOn=false;
+let blinkTimer=null;
 
-/* ================= RPM ================= */
+/* ===== RPM ===== */
 const ctx=rpmCanvas.getContext("2d");
 let rpmSmooth=0;
 
 function drawRPM(r){
-  rpmSmooth += (r-rpmSmooth)*0.12; // smooth inertia
+  rpmSmooth += (r-rpmSmooth)*0.12;
   ctx.clearRect(0,0,140,140);
 
   const cx=70, cy=70, rad=58;
-
   ctx.strokeStyle="#123a5a"; ctx.lineWidth=4;
   ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.stroke();
 
@@ -127,10 +123,6 @@ function drawRPM(r){
     ctx.moveTo(cx+Math.cos(a)*(rad-6),cy+Math.sin(a)*(rad-6));
     ctx.lineTo(cx+Math.cos(a)*(rad),cy+Math.sin(a)*(rad));
     ctx.stroke();
-
-    ctx.fillStyle="#9ddcff"; ctx.font="10px Arial";
-    ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.fillText(i,cx+Math.cos(a)*(rad-16),cy+Math.sin(a)*(rad-16));
   }
 
   const needle=(-130+rpmSmooth*260)*Math.PI/180;
@@ -141,7 +133,7 @@ function drawRPM(r){
   ctx.stroke();
 }
 
-/* ================= BLINK ================= */
+/* ===== BLINK ===== */
 function startBlink(){
   if(blinkTimer) return;
   blinkTimer=setInterval(()=>{
@@ -155,7 +147,7 @@ function stopBlink(){
   rightIcon.classList.remove("blink");
 }
 
-/* ================= GEAR LOGIC ================= */
+/* ===== GEAR LOGIC ===== */
 function updateGear(){
   if(!engineOn){ gear.innerText="P"; return; }
   if(speedMPH===0){ gear.innerText="N"; return; }
@@ -163,7 +155,7 @@ function updateGear(){
   gear.innerText=gearRaw;
 }
 
-/* ================= TEMPLATE HOOK ================= */
+/* ===== TEMPLATE HOOK ===== */
 window.setRPM=v=>drawRPM(v);
 
 window.setSpeed=s=>{
@@ -172,35 +164,41 @@ window.setSpeed=s=>{
   updateGear();
 };
 
-window.setGear=g=>{ gearRaw=g; updateGear(); };
-
-window.setFuel=f=>fuelBar.style.width=(f*100)+"%";
-
-window.setHealth=h=>{
-  health=h; engineBar.style.width=(h*100)+"%";
-  engineIcon.className=h<0.4?"on-red":"on-blue";
-};
-
-window.setEngine=s=>{
-  engineOn=s;
-  engineIcon.className=s?"on-blue":"off";
-  if(!s){ leftOn=rightOn=false; stopBlink(); }
+window.setGear=g=>{
+  gearRaw=g;
   updateGear();
 };
 
-window.setHeadlights=s=>{
-  lightIcon.className=(s>0 && engineOn)?"on-blue":"off";
+window.setFuel=f=>fuelBar.style.width=(f*100)+"%";
+window.setHealth=h=>engineBar.style.width=(h*100)+"%";
+
+/* ENGINE */
+window.setEngine=state=>{
+  engineOn=state;
+  engineIcon.className=state?"green":"white";
+  if(!state){
+    leftOn=rightOn=false;
+    stopBlink();
+    leftIcon.className=rightIcon.className="white";
+  }
+  updateGear();
 };
 
-window.setLeftIndicator=s=>{
-  leftOn=s && engineOn;
-  leftIcon.className=leftOn?"on-yellow":"off";
+/* LIGHT */
+window.setHeadlights=state=>{
+  lightIcon.className=state>0 && engineOn?"yellow":"white";
+};
+
+/* TURN SIGNAL */
+window.setLeftIndicator=state=>{
+  leftOn=state && engineOn;
+  leftIcon.className=leftOn?"yellow":"white";
   leftOn||rightOn?startBlink():stopBlink();
 };
 
-window.setRightIndicator=s=>{
-  rightOn=s && engineOn;
-  rightIcon.className=rightOn?"on-yellow":"off";
+window.setRightIndicator=state=>{
+  rightOn=state && engineOn;
+  rightIcon.className=rightOn?"yellow":"white";
   leftOn||rightOn?startBlink():stopBlink();
 };
 
