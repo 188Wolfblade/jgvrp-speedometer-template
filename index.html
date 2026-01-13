@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW HUD Clean</title>
+<title>BMW HUD Final Clean</title>
 
 <style>
 body {
@@ -17,7 +17,7 @@ body {
   bottom: 28px;
   right: 28px;
   display: flex;
-  gap: 0; /* nempel */
+  gap: 0;
   align-items: flex-end;
 }
 
@@ -75,7 +75,7 @@ body {
 /* SPEED */
 #speed {
   position: absolute;
-  top: 72px;
+  top: 62px;
   width: 100%;
   text-align: center;
   font-size: 46px;
@@ -84,26 +84,67 @@ body {
 }
 
 #unit {
-  font-size: 46px;
-  font-weight: 900;
-  margin-left: 6px;
+  position: absolute;
+  top: 112px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
   opacity: 0.6;
 }
 
-/* SPEED ROW */
-#speedRow {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
+/* ===== BARS (INSIDE CIRCLE) ===== */
+#bars {
+  position: absolute;
+  bottom: 44px;
+  width: 80%;
+  left: 10%;
 }
 
-/* ===== STATUS ICONS ===== */
+.barWrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.iconSmall {
+  width: 16px;
+  font-size: 11px;
+}
+
+.bar {
+  flex: 1;
+  height: 6px;
+  background: #0a2438;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fillFuel {
+  height: 100%;
+  background: linear-gradient(90deg, #4db8ff, #007bff);
+}
+
+.fillEngine {
+  height: 100%;
+  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
+}
+
+/* ===== ODOMETER ===== */
+#odo {
+  position: absolute;
+  bottom: 16px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ===== STATUS ICONS (OUTSIDE) ===== */
 #status {
   margin-top: 6px;
   display: flex;
-  gap: 10px;
-  font-size: 14px;
-  opacity: 0.85;
+  gap: 12px;
+  font-size: 15px;
 }
 
 .status-on {
@@ -113,16 +154,6 @@ body {
 
 .status-off {
   color: #555;
-}
-
-/* ===== ODOMETER ===== */
-#odo {
-  position: absolute;
-  bottom: 14px;
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-  opacity: 0.75;
 }
 </style>
 </head>
@@ -136,24 +167,33 @@ body {
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
-  <!-- SPEED + STATUS -->
+  <!-- SPEED -->
   <div id="speedWrap">
 
     <div id="speedCircle" class="circle">
       <div id="gear">N</div>
 
-      <div id="speedRow">
-        <div id="speed">0</div>
-        <div id="unit">MPH</div>
+      <div id="speed">0</div>
+      <div id="unit">MPH</div>
+
+      <div id="bars">
+        <div class="barWrap">
+          <span class="iconSmall">⛽</span>
+          <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
+        </div>
+        <div class="barWrap">
+          <span class="iconSmall">🔧</span>
+          <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+        </div>
       </div>
 
       <div id="odo">ODO 0.0 mi</div>
     </div>
 
-    <!-- ICON STATUS DI BAWAH -->
+    <!-- STATUS ICONS BELOW -->
     <div id="status">
       <span id="engineIcon" class="status-off">🔧</span>
-      <span id="lightIcon"  class="status-off">💡</span>
+      <span id="lightIcon" class="status-off">💡</span>
       <span id="signalIcon" class="status-off">↔️</span>
     </div>
 
@@ -208,10 +248,8 @@ function drawRPM(r) {
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(cx, cy);
-  ctx.lineTo(
-    cx + Math.cos(needle)*(rad-12),
-    cy + Math.sin(needle)*(rad-12)
-  );
+  ctx.lineTo(cx + Math.cos(needle)*(rad-12),
+             cy + Math.sin(needle)*(rad-12));
   ctx.stroke();
 
   ctx.fillStyle = "#4db8ff";
@@ -230,6 +268,12 @@ window.setSpeed = s =>
 window.setGear = g =>
   document.getElementById("gear").innerText =
     (g === 0 ? "R" : g);
+
+window.setFuel = f =>
+  document.getElementById("fuelBar").style.width = (f*100)+"%";
+
+window.setHealth = h =>
+  document.getElementById("engineBar").style.width = (h*100)+"%";
 
 window.setEngine = state =>
   document.getElementById("engineIcon").className =
