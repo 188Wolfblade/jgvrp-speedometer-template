@@ -1,48 +1,73 @@
-* {
-    user-select: none;
-    user-drag: none;
-}
-
 body {
-    background-color: transparent !important;
-    font-family: Arial, sans-serif;
-    font-size: 11pt;
+  margin: 0;
+  background: transparent;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-main {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-
-    width: 250px;
-    display: flex;
-    flex-direction: row;
-    background-color: #000000AA;
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
+#bmw-speedo {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 25px rgba(0,191,255,0.4);
+  color: white;
+  overflow: hidden;
 }
 
-section {
-    width: 125px
+/* Wolf background */
+#wolf-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.18;
 }
 
-dl {
-    margin: 0;
+/* RPM */
+#rpmCanvas {
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
-dt {
-    font-weight: bold;
+/* Speed */
+#speed-block {
+  position: absolute;
+  bottom: 85px;
+  width: 100%;
+  text-align: center;
 }
 
-dt::after {
-    content: ":";
+#speed {
+  font-size: 56px;
+  font-weight: bold;
 }
 
-dd {
-    margin: 0;
+#unit {
+  font-size: 14px;
+  opacity: 0.8;
 }
 
-dd:not(:last-child) {
-    margin-bottom: 5px;
+/* Gear */
+#gear {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 34px;
+  font-weight: bold;
+  color: #00bfff;
+  text-shadow: 0 0 10px #00bfff;
+}
+
+/* Status */
+#status {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
 }
