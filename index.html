@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW M Track HUD</title>
+<title>BMW M Performance HUD</title>
 
 <style>
 body {
@@ -17,7 +17,7 @@ body {
   bottom: 28px;
   right: 28px;
   display: flex;
-  gap: 6px; /* nempel */
+  gap: 6px;
   align-items: flex-end;
 }
 
@@ -34,50 +34,63 @@ body {
   height: 150px;
   background: radial-gradient(circle, #0a1a2a 40%, #000 75%);
   box-shadow:
-    inset 0 0 14px rgba(0,140,255,0.4),
+    inset 0 0 14px rgba(0,140,255,0.45),
     0 0 18px rgba(0,140,255,0.35);
 }
 
+/* RPM CANVAS */
 #rpmCanvas {
   position: absolute;
   top: 5px;
   left: 5px;
 }
 
-/* GEAR INSIDE RPM */
-#gear {
-  position: absolute;
-  bottom: 26px;
-  width: 100%;
-  text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #4db8ff;
-  text-shadow: 0 0 10px #4db8ff;
-}
-
 /* ===== SPEED (RIGHT BIG) ===== */
 #speedCircle {
   width: 220px;
   height: 220px;
-  background: radial-gradient(circle, #0a1f33 35%, #000 80%);
+  background: radial-gradient(circle, #0a2238 35%, #000 80%);
   box-shadow:
-    inset 0 0 22px rgba(0,170,255,0.45),
-    0 0 30px rgba(0,170,255,0.35);
+    inset 0 0 24px rgba(0,170,255,0.5),
+    0 0 32px rgba(0,170,255,0.4);
 }
 
-#speed {
+/* GEAR (ABOVE SPEED) */
+#gear {
   position: absolute;
-  top: 72px;
+  top: 28px;
   width: 100%;
   text-align: center;
-  font-size: 52px;
-  font-weight: 900;
-  color: #bfe7ff;
-  text-shadow: 0 0 14px rgba(0,170,255,0.8);
+  font-size: 28px;
+  font-weight: bold;
+  color: #8fd3ff;
+  text-shadow: 0 0 14px rgba(0,170,255,0.9);
 }
 
-/* ===== BARS ===== */
+/* SPEED NUMBER */
+#speed {
+  position: absolute;
+  top: 78px;
+  width: 100%;
+  text-align: center;
+  font-size: 56px;
+  font-weight: 900;
+  color: #d9f2ff;
+  text-shadow: 0 0 18px rgba(0,170,255,0.9);
+}
+
+/* MODE LABEL */
+#mode {
+  position: absolute;
+  top: 140px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
+/* BARS */
 #bars {
   position: absolute;
   bottom: 40px;
@@ -106,15 +119,15 @@ body {
 
 .fillFuel {
   height: 100%;
-  background: linear-gradient(90deg, #4db8ff, #007bff);
+  background: linear-gradient(90deg, #6fd0ff, #1a90ff);
 }
 
 .fillEngine {
   height: 100%;
-  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
+  background: linear-gradient(90deg, #9be2ff, #3aa6ff);
 }
 
-/* ===== ODO ===== */
+/* ODOMETER */
 #odo {
   position: absolute;
   bottom: 14px;
@@ -122,6 +135,17 @@ body {
   text-align: center;
   font-size: 11px;
   opacity: 0.75;
+}
+
+/* ===== M PERFORMANCE ANIMATION ===== */
+.m-pulse {
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: inset 0 0 20px rgba(0,170,255,0.4), 0 0 24px rgba(0,170,255,0.3); }
+  50%  { box-shadow: inset 0 0 28px rgba(0,170,255,0.7), 0 0 40px rgba(0,170,255,0.6); }
+  100% { box-shadow: inset 0 0 20px rgba(0,170,255,0.4), 0 0 24px rgba(0,170,255,0.3); }
 }
 </style>
 </head>
@@ -133,12 +157,13 @@ body {
   <!-- RPM -->
   <div id="rpmCircle" class="circle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
-    <div id="gear">N</div>
   </div>
 
   <!-- SPEED -->
   <div id="speedCircle" class="circle">
+    <div id="gear">N</div>
     <div id="speed">0</div>
+    <div id="mode">COMFORT</div>
 
     <div id="bars">
       <div class="barWrap">
@@ -170,19 +195,16 @@ function drawRPM(r) {
   const cx = 70, cy = 70, rad = 58;
   ctx.clearRect(0,0,140,140);
 
-  // outer ring
   ctx.strokeStyle = "#123a5a";
   ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.arc(cx, cy, rad, 0, Math.PI*2);
   ctx.stroke();
 
-  // ticks + numbers
   for (let i = 0; i <= 8; i++) {
     const ang = (-130 + i * 32.5) * Math.PI/180;
     ctx.strokeStyle = i >= 7 ? "#ff5555" : "#6fc8ff";
     ctx.lineWidth = 2;
-
     ctx.beginPath();
     ctx.moveTo(cx + Math.cos(ang)*(rad-6), cy + Math.sin(ang)*(rad-6));
     ctx.lineTo(cx + Math.cos(ang)*(rad), cy + Math.sin(ang)*(rad));
@@ -193,15 +215,11 @@ function drawRPM(r) {
       ctx.font = "10px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(
-        i,
-        cx + Math.cos(ang)*(rad-16),
-        cy + Math.sin(ang)*(rad-16)
-      );
+      ctx.fillText(i, cx + Math.cos(ang)*(rad-16),
+                      cy + Math.sin(ang)*(rad-16));
     }
   }
 
-  // needle
   const needle = (-130 + rpmSmooth * 260) * Math.PI/180;
   ctx.strokeStyle = "#4db8ff";
   ctx.lineWidth = 3;
@@ -215,21 +233,47 @@ function drawRPM(r) {
   ctx.beginPath();
   ctx.arc(cx, cy, 3, 0, Math.PI*2);
   ctx.fill();
+
+  updateMode();
+}
+
+/* ===== MODE LOGIC ===== */
+function updateMode() {
+  const speed = currentSpeed;
+  const rpm = rpmSmooth;
+
+  const circle = document.getElementById("speedCircle");
+  const label = document.getElementById("mode");
+
+  circle.classList.remove("m-pulse");
+
+  if (rpm > 0.75 || speed > 80) {
+    label.innerText = "TRACK";
+    circle.classList.add("m-pulse");
+  } else if (rpm > 0.45 || speed > 40) {
+    label.innerText = "SPORT";
+  } else {
+    label.innerText = "COMFORT";
+  }
 }
 
 /* ===== HOOK FUNCTIONS ===== */
+let currentSpeed = 0;
+
 const _rpm = window.setRPM;
 window.setRPM = v => { drawRPM(v); _rpm(v); };
 
 const _spd = window.setSpeed;
 window.setSpeed = s => {
-  document.getElementById("speed").innerText = Math.round(s * 2.23694);
+  currentSpeed = Math.round(s * 2.23694);
+  document.getElementById("speed").innerText = currentSpeed;
   _spd(s);
 };
 
 const _gear = window.setGear;
 window.setGear = g => {
-  document.getElementById("gear").innerText = g;
+  document.getElementById("gear").innerText =
+    (g === 0 ? "R" : g);
   _gear(g);
 };
 
