@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW HUD Final Clean</title>
+<title>BMW HUD Final</title>
 
 <style>
 body {
@@ -28,7 +28,7 @@ body {
   color: white;
 }
 
-/* ===== RPM (LEFT) ===== */
+/* ===== RPM ===== */
 #rpmCircle {
   width: 150px;
   height: 150px;
@@ -44,7 +44,7 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED (RIGHT) ===== */
+/* ===== SPEED ===== */
 #speedWrap {
   display: flex;
   flex-direction: column;
@@ -75,7 +75,7 @@ body {
 /* SPEED */
 #speed {
   position: absolute;
-  top: 62px;
+  top: 60px;
   width: 100%;
   text-align: center;
   font-size: 46px;
@@ -83,16 +83,18 @@ body {
   color: #e3f5ff;
 }
 
+/* MPH (DIPISAH JARAK) */
 #unit {
   position: absolute;
-  top: 112px;
+  top: 112px; /* JARAK DITAMBAH */
   width: 100%;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.6;
+  letter-spacing: 1px;
 }
 
-/* ===== BARS (INSIDE CIRCLE) ===== */
+/* ===== BARS ===== */
 #bars {
   position: absolute;
   bottom: 44px;
@@ -139,11 +141,11 @@ body {
   opacity: 0.75;
 }
 
-/* ===== STATUS ICONS (OUTSIDE) ===== */
+/* ===== STATUS ICONS ===== */
 #status {
   margin-top: 6px;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   font-size: 15px;
 }
 
@@ -190,11 +192,12 @@ body {
       <div id="odo">ODO 0.0 mi</div>
     </div>
 
-    <!-- STATUS ICONS BELOW -->
+    <!-- STATUS ICONS -->
     <div id="status">
       <span id="engineIcon" class="status-off">🔧</span>
       <span id="lightIcon" class="status-off">💡</span>
-      <span id="signalIcon" class="status-off">↔️</span>
+      <span id="leftIcon"  class="status-off">◀️</span>
+      <span id="rightIcon" class="status-off">▶️</span>
     </div>
 
   </div>
@@ -204,7 +207,7 @@ body {
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM GAUGE ===== */
+/* ===== RPM ===== */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
 let rpmSmooth = 0;
@@ -235,8 +238,7 @@ function drawRPM(r) {
       ctx.font = "10px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(
-        i,
+      ctx.fillText(i,
         cx + Math.cos(ang)*(rad-16),
         cy + Math.sin(ang)*(rad-16)
       );
@@ -258,7 +260,7 @@ function drawRPM(r) {
   ctx.fill();
 }
 
-/* ===== JGVRP HOOKS ===== */
+/* ===== JGVRP TEMPLATE HOOKS ===== */
 window.setRPM = v => drawRPM(v);
 
 window.setSpeed = s =>
@@ -279,16 +281,17 @@ window.setEngine = state =>
   document.getElementById("engineIcon").className =
     state ? "status-on" : "status-off";
 
+/* headlight: 0 off, 1 on, 2 high beam */
 window.setHeadlights = state =>
   document.getElementById("lightIcon").className =
-    state ? "status-on" : "status-off";
+    state > 0 ? "status-on" : "status-off";
 
 window.setLeftIndicator = state =>
-  document.getElementById("signalIcon").className =
+  document.getElementById("leftIcon").className =
     state ? "status-on" : "status-off";
 
 window.setRightIndicator = state =>
-  document.getElementById("signalIcon").className =
+  document.getElementById("rightIcon").className =
     state ? "status-on" : "status-off";
 
 window.setOdometer = d =>
