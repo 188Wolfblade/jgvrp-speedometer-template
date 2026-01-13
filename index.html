@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW M HUD</title>
+<title>BMW HUD Clean</title>
 
 <style>
 body {
@@ -17,7 +17,7 @@ body {
   bottom: 28px;
   right: 28px;
   display: flex;
-  gap: 6px;
+  gap: 0; /* nempel */
   align-items: flex-end;
 }
 
@@ -28,22 +28,7 @@ body {
   color: white;
 }
 
-/* ===== BMW M TRI COLOR STRIPE ===== */
-.m-stripe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  display: flex;
-}
-
-.m-stripe div:nth-child(1){background:#4db8ff;}
-.m-stripe div:nth-child(2){background:#1f5cff;}
-.m-stripe div:nth-child(3){background:#ff3b3b;}
-.m-stripe div{flex:1;}
-
-/* ===== RPM (LEFT SMALL) ===== */
+/* ===== RPM (LEFT) ===== */
 #rpmCircle {
   width: 150px;
   height: 150px;
@@ -59,7 +44,13 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED (RIGHT BIG) ===== */
+/* ===== SPEED (RIGHT) ===== */
+#speedWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #speedCircle {
   width: 220px;
   height: 220px;
@@ -69,65 +60,59 @@ body {
     0 0 30px rgba(0,170,255,0.35);
 }
 
-/* GEAR ABOVE SPEED */
+/* GEAR */
 #gear {
   position: absolute;
-  top: 26px;
+  top: 24px;
   width: 100%;
   text-align: center;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: bold;
-  color: #8fd3ff;
-  text-shadow: 0 0 12px rgba(0,170,255,0.9);
+  color: #9ddcff;
+  text-shadow: 0 0 10px rgba(0,170,255,0.9);
 }
 
-/* SPEED NUMBER (SMALLER & HIGHER) */
+/* SPEED */
 #speed {
   position: absolute;
-  top: 64px;
+  top: 72px;
   width: 100%;
   text-align: center;
-  font-size: 48px;
+  font-size: 46px;
   font-weight: 900;
-  color: #d9f2ff;
-  text-shadow: 0 0 14px rgba(0,170,255,0.9);
+  color: #e3f5ff;
 }
 
-/* ===== BARS ===== */
-#bars {
-  position: absolute;
-  bottom: 36px;
-  width: 80%;
-  left: 10%;
+#unit {
+  font-size: 46px;
+  font-weight: 900;
+  margin-left: 6px;
+  opacity: 0.6;
 }
 
-.barWrap {
+/* SPEED ROW */
+#speedRow {
   display: flex;
-  align-items: center;
-  margin-bottom: 6px;
+  justify-content: center;
+  align-items: baseline;
 }
 
-.icon {
-  width: 18px;
-  font-size: 12px;
+/* ===== STATUS ICONS ===== */
+#status {
+  margin-top: 6px;
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  opacity: 0.85;
 }
 
-.bar {
-  flex: 1;
-  height: 6px;
-  background: #0a2438;
-  border-radius: 6px;
-  overflow: hidden;
+.status-on {
+  color: #7fd4ff;
+  text-shadow: 0 0 8px rgba(0,170,255,0.8);
 }
 
-.fillFuel {
-  height: 100%;
-  background: linear-gradient(90deg, #4db8ff, #007bff);
-}
-
-.fillEngine {
-  height: 100%;
-  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
+.status-off {
+  color: #555;
 }
 
 /* ===== ODOMETER ===== */
@@ -149,32 +134,29 @@ body {
   <!-- RPM -->
   <div id="rpmCircle" class="circle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
-    <div class="m-stripe">
-      <div></div><div></div><div></div>
-    </div>
   </div>
 
-  <!-- SPEED -->
-  <div id="speedCircle" class="circle">
-    <div class="m-stripe">
-      <div></div><div></div><div></div>
+  <!-- SPEED + STATUS -->
+  <div id="speedWrap">
+
+    <div id="speedCircle" class="circle">
+      <div id="gear">N</div>
+
+      <div id="speedRow">
+        <div id="speed">0</div>
+        <div id="unit">MPH</div>
+      </div>
+
+      <div id="odo">ODO 0.0 mi</div>
     </div>
 
-    <div id="gear">N</div>
-    <div id="speed">0</div>
-
-    <div id="bars">
-      <div class="barWrap">
-        <span class="icon">⛽</span>
-        <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
-      </div>
-      <div class="barWrap">
-        <span class="icon">🔧</span>
-        <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
-      </div>
+    <!-- ICON STATUS DI BAWAH -->
+    <div id="status">
+      <span id="engineIcon" class="status-off">🔧</span>
+      <span id="lightIcon"  class="status-off">💡</span>
+      <span id="signalIcon" class="status-off">↔️</span>
     </div>
 
-    <div id="odo">ODO 0.0 mi</div>
   </div>
 
 </div>
@@ -213,7 +195,8 @@ function drawRPM(r) {
       ctx.font = "10px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(i,
+      ctx.fillText(
+        i,
         cx + Math.cos(ang)*(rad-16),
         cy + Math.sin(ang)*(rad-16)
       );
@@ -225,8 +208,10 @@ function drawRPM(r) {
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(needle)*(rad-12),
-             cy + Math.sin(needle)*(rad-12));
+  ctx.lineTo(
+    cx + Math.cos(needle)*(rad-12),
+    cy + Math.sin(needle)*(rad-12)
+  );
   ctx.stroke();
 
   ctx.fillStyle = "#4db8ff";
@@ -235,7 +220,7 @@ function drawRPM(r) {
   ctx.fill();
 }
 
-/* ===== HOOK JGVRP ===== */
+/* ===== JGVRP HOOKS ===== */
 window.setRPM = v => drawRPM(v);
 
 window.setSpeed = s =>
@@ -246,17 +231,27 @@ window.setGear = g =>
   document.getElementById("gear").innerText =
     (g === 0 ? "R" : g);
 
-window.setFuel = f =>
-  document.getElementById("fuelBar").style.width = (f*100)+"%";
+window.setEngine = state =>
+  document.getElementById("engineIcon").className =
+    state ? "status-on" : "status-off";
 
-window.setHealth = h =>
-  document.getElementById("engineBar").style.width = (h*100)+"%";
+window.setHeadlights = state =>
+  document.getElementById("lightIcon").className =
+    state ? "status-on" : "status-off";
+
+window.setLeftIndicator = state =>
+  document.getElementById("signalIcon").className =
+    state ? "status-on" : "status-off";
+
+window.setRightIndicator = state =>
+  document.getElementById("signalIcon").className =
+    state ? "status-on" : "status-off";
 
 window.setOdometer = d =>
   document.getElementById("odo").innerText =
     "ODO " + d.toFixed(1) + " mi";
 
-setSpeedMode(1); // MPH
+setSpeedMode(1);
 </script>
 
 </body>
