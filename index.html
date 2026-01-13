@@ -2,64 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW HUD FINAL LOGIC FIX</title>
+<title>BMW HUD Clean Final</title>
 
 <style>
-body { margin:0; background:transparent; font-family:Arial,sans-serif; }
+body {
+  margin: 0;
+  background: transparent;
+  font-family: Arial, sans-serif;
+}
 
+/* ===== CONTAINER ===== */
 #hud {
-  position:fixed;
-  bottom:28px;
-  right:28px;
-  display:flex;
-  gap:0;
-  align-items:flex-end;
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  gap: 0;              /* nempel */
+  align-items: flex-end;
 }
 
-.circle { border-radius:50%; position:relative; color:white; }
+/* ===== COMMON ===== */
+.circle {
+  position: relative;
+  border-radius: 50%;
+  color: white;
+}
 
-/* RPM */
+/* ===== RPM (LEFT) ===== */
 #rpmCircle {
-  width:150px; height:150px;
-  background:radial-gradient(circle,#0a1a2a 40%,#000 75%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #0a1a2a 40%, #000 75%);
+  box-shadow:
+    inset 0 0 14px rgba(0,140,255,0.45),
+    0 0 18px rgba(0,140,255,0.35);
 }
-#rpmCanvas { position:absolute; top:5px; left:5px; }
+
+#rpmCanvas {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+/* ===== SPEED (RIGHT) ===== */
+#speedWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#speedCircle {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, #0a2238 35%, #000 80%);
+  box-shadow:
+    inset 0 0 22px rgba(0,170,255,0.45),
+    0 0 30px rgba(0,170,255,0.35);
+}
+
+/* GEAR */
+#gear {
+  position: absolute;
+  top: 22px;
+  width: 100%;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  color: #9ddcff;
+}
 
 /* SPEED */
-#speedWrap { display:flex; flex-direction:column; align-items:center; }
-#speedCircle {
-  width:220px; height:220px;
-  background:radial-gradient(circle,#0a2238 35%,#000 80%);
-}
-
-#gear {
-  position:absolute; top:22px; width:100%;
-  text-align:center; font-size:26px; font-weight:bold;
-}
-
 #speed {
-  position:absolute; top:58px; width:100%;
-  text-align:center; font-size:46px; font-weight:900;
+  position: absolute;
+  top: 58px;
+  width: 100%;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 900;
+  color: #e3f5ff;
 }
 
+/* MPH */
 #unit {
-  position:absolute; top:112px; width:100%;
-  text-align:center; font-size:13px; opacity:.6;
+  position: absolute;
+  top: 112px;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+  letter-spacing: 1px;
 }
 
-/* Bars */
-#bars { position:absolute; bottom:44px; width:80%; left:10%; }
-.bar { height:6px; background:#0a2438; border-radius:6px; margin-bottom:6px; }
-.fillFuel { height:100%; background:#4db8ff; }
-.fillEngine { height:100%; background:#6fd0ff; }
+/* ===== BARS ===== */
+#bars {
+  position: absolute;
+  bottom: 44px;
+  width: 80%;
+  left: 10%;
+}
 
-/* Status Icons */
-#status { margin-top:6px; display:flex; gap:14px; font-size:16px; }
+.bar {
+  height: 6px;
+  background: #0a2438;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
 
-.white { color:#bbb; }
-.green { color:#3cff8f; text-shadow:0 0 8px #3cff8f; }
-.yellow { color:#ffd000; text-shadow:0 0 8px #ffd000; }
-.blink { opacity:.2; }
+.fillFuel {
+  height: 100%;
+  background: linear-gradient(90deg, #4db8ff, #007bff);
+}
+
+.fillEngine {
+  height: 100%;
+  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
+}
 </style>
 </head>
 
@@ -67,142 +125,100 @@ body { margin:0; background:transparent; font-family:Arial,sans-serif; }
 
 <div id="hud">
 
+  <!-- RPM -->
   <div id="rpmCircle" class="circle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
+  <!-- SPEED -->
   <div id="speedWrap">
-
     <div id="speedCircle" class="circle">
-      <div id="gear">P</div>
+      <div id="gear">0</div>
       <div id="speed">0</div>
       <div id="unit">MPH</div>
 
       <div id="bars">
-        <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
-        <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+        <div class="bar">
+          <div id="fuelBar" class="fillFuel"></div>
+        </div>
+        <div class="bar">
+          <div id="engineBar" class="fillEngine"></div>
+        </div>
       </div>
     </div>
-
-    <div id="status">
-      <span id="engineIcon" class="white">🔧</span>
-      <span id="lightIcon"  class="white">💡</span>
-      <span id="leftIcon"   class="white">◀️</span>
-      <span id="rightIcon"  class="white">▶️</span>
-    </div>
-
   </div>
+
 </div>
 
 <script src="script.js"></script>
 
 <script>
-/* ===== STATE ===== */
-let engineOn=false;
-let speedMPH=0;
-let gearRaw=0;
-let leftOn=false, rightOn=false;
-let blinkTimer=null;
+/* ===== RPM (SMOOTH) ===== */
+const ctx = rpmCanvas.getContext("2d");
+let rpmSmooth = 0;
 
-/* ===== RPM ===== */
-const ctx=rpmCanvas.getContext("2d");
-let rpmSmooth=0;
+function drawRPM(r) {
+  rpmSmooth += (r - rpmSmooth) * 0.12;
 
-function drawRPM(r){
-  rpmSmooth += (r-rpmSmooth)*0.12;
-  ctx.clearRect(0,0,140,140);
+  ctx.clearRect(0, 0, 140, 140);
 
-  const cx=70, cy=70, rad=58;
-  ctx.strokeStyle="#123a5a"; ctx.lineWidth=4;
-  ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.stroke();
+  const cx = 70, cy = 70, rad = 58;
 
-  for(let i=1;i<=8;i++){
-    const a=(-130+i*32.5)*Math.PI/180;
-    ctx.strokeStyle=i>=7?"#ff5555":"#6fc8ff";
+  // outer ring
+  ctx.strokeStyle = "#123a5a";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // ticks
+  for (let i = 1; i <= 8; i++) {
+    const ang = (-130 + i * 32.5) * Math.PI / 180;
+    ctx.strokeStyle = i >= 7 ? "#ff5555" : "#6fc8ff";
+    ctx.lineWidth = 2;
+
     ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(a)*(rad-6),cy+Math.sin(a)*(rad-6));
-    ctx.lineTo(cx+Math.cos(a)*(rad),cy+Math.sin(a)*(rad));
+    ctx.moveTo(cx + Math.cos(ang) * (rad - 6),
+               cy + Math.sin(ang) * (rad - 6));
+    ctx.lineTo(cx + Math.cos(ang) * rad,
+               cy + Math.sin(ang) * rad);
     ctx.stroke();
   }
 
-  const needle=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#4db8ff"; ctx.lineWidth=3;
+  // needle
+  const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
+  ctx.strokeStyle = "#4db8ff";
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+Math.cos(needle)*(rad-12),cy+Math.sin(needle)*(rad-12));
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(
+    cx + Math.cos(needle) * (rad - 12),
+    cy + Math.sin(needle) * (rad - 12)
+  );
   ctx.stroke();
 }
 
-/* ===== BLINK ===== */
-function startBlink(){
-  if(blinkTimer) return;
-  blinkTimer=setInterval(()=>{
-    if(leftOn) leftIcon.classList.toggle("blink");
-    if(rightOn) rightIcon.classList.toggle("blink");
-  },450);
-}
-function stopBlink(){
-  clearInterval(blinkTimer); blinkTimer=null;
-  leftIcon.classList.remove("blink");
-  rightIcon.classList.remove("blink");
-}
+/* ===== JGVRP HOOKS ===== */
+window.setRPM = v => drawRPM(v);
 
-/* ===== GEAR LOGIC ===== */
-function updateGear(){
-  if(!engineOn){ gear.innerText="P"; return; }
-  if(speedMPH===0){ gear.innerText="N"; return; }
-  if(gearRaw===0){ gear.innerText="R"; return; }
-  gear.innerText=gearRaw;
-}
-
-/* ===== TEMPLATE HOOK ===== */
-window.setRPM=v=>drawRPM(v);
-
-window.setSpeed=s=>{
-  speedMPH=Math.round(s*2.23694);
-  speed.innerText=speedMPH;
-  updateGear();
+window.setSpeed = s => {
+  speed.innerText = Math.round(s * 2.23694);
 };
 
-window.setGear=g=>{
-  gearRaw=g;
-  updateGear();
+window.setGear = g => {
+  // 0 = diam, R = mundur, lainnya maju
+  gear.innerText = (g === 0 ? "R" : g);
 };
 
-window.setFuel=f=>fuelBar.style.width=(f*100)+"%";
-window.setHealth=h=>engineBar.style.width=(h*100)+"%";
-
-/* ENGINE */
-window.setEngine=state=>{
-  engineOn=state;
-  engineIcon.className=state?"green":"white";
-  if(!state){
-    leftOn=rightOn=false;
-    stopBlink();
-    leftIcon.className=rightIcon.className="white";
-  }
-  updateGear();
+window.setFuel = f => {
+  fuelBar.style.width = (f * 100) + "%";
 };
 
-/* LIGHT */
-window.setHeadlights=state=>{
-  lightIcon.className=state>0 && engineOn?"yellow":"white";
+window.setHealth = h => {
+  engineBar.style.width = (h * 100) + "%";
 };
 
-/* TURN SIGNAL */
-window.setLeftIndicator=state=>{
-  leftOn=state && engineOn;
-  leftIcon.className=leftOn?"yellow":"white";
-  leftOn||rightOn?startBlink():stopBlink();
-};
-
-window.setRightIndicator=state=>{
-  rightOn=state && engineOn;
-  rightIcon.className=rightOn?"yellow":"white";
-  leftOn||rightOn?startBlink():stopBlink();
-};
-
-setSpeedMode(1);
+setSpeedMode(1); // MPH
 </script>
 
 </body>
