@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BMW M Track Speedometer</title>
+<title>BMW M Track Dual Gauge</title>
 
 <style>
 body {
@@ -11,20 +11,29 @@ body {
   font-family: Arial, sans-serif;
 }
 
+/* CONTAINER */
 #hud {
   position: fixed;
   bottom: 28px;
   right: 28px;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #120000 40%, #000 75%);
-  box-shadow: inset 0 0 22px rgba(255,40,40,0.35),
-              0 0 28px rgba(255,40,40,0.25);
-  color: white;
+  display: flex;
+  gap: 14px;
 }
 
-/* RPM */
+/* COMMON CIRCLE */
+.circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #120000 40%, #000 75%);
+  box-shadow:
+    inset 0 0 18px rgba(255,40,40,0.35),
+    0 0 22px rgba(255,40,40,0.25);
+  color: white;
+  position: relative;
+}
+
+/* ===== RPM ===== */
 #rpmCanvas {
   position: absolute;
   top: 10px;
@@ -33,17 +42,17 @@ body {
 
 #rpmText {
   position: absolute;
-  top: 62px;
+  top: 78px;
   width: 100%;
   text-align: center;
   font-size: 12px;
   opacity: 0.85;
 }
 
-/* SPEED */
+/* ===== SPEED ===== */
 #speedBox {
   position: absolute;
-  bottom: 68px;
+  top: 62px;
   width: 100%;
   text-align: center;
 }
@@ -61,9 +70,9 @@ body {
 /* GEAR */
 #gear {
   position: absolute;
-  top: 14px;
-  right: 18px;
-  font-size: 30px;
+  top: 12px;
+  right: 16px;
+  font-size: 28px;
   font-weight: bold;
   color: #ff2a2a;
   text-shadow: 0 0 10px #ff2a2a;
@@ -76,7 +85,7 @@ body {
 /* BARS */
 #bars {
   position: absolute;
-  bottom: 28px;
+  bottom: 30px;
   width: 80%;
   left: 10%;
 }
@@ -113,7 +122,7 @@ body {
 /* ODO */
 #odo {
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
   width: 100%;
   text-align: center;
   font-size: 10px;
@@ -125,33 +134,42 @@ body {
 <body>
 
 <div id="hud">
-  <canvas id="rpmCanvas" width="220" height="220"></canvas>
-  <div id="rpmText">0 RPM</div>
 
-  <div id="speedBox">
-    <div id="speed">0</div>
-    <div id="unit">MPH</div>
+  <!-- RPM CIRCLE (LEFT) -->
+  <div class="circle">
+    <canvas id="rpmCanvas" width="180" height="180"></canvas>
+    <div id="rpmText">0 RPM</div>
   </div>
 
-  <div id="gear">N</div>
+  <!-- SPEED CIRCLE (RIGHT) -->
+  <div class="circle">
+    <div id="gear">N</div>
 
-  <div id="bars">
-    <div class="barWrap">
-      <span class="icon">⛽</span>
-      <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
+    <div id="speedBox">
+      <div id="speed">0</div>
+      <div id="unit">MPH</div>
     </div>
-    <div class="barWrap">
-      <span class="icon">🔧</span>
-      <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+
+    <div id="bars">
+      <div class="barWrap">
+        <span class="icon">⛽</span>
+        <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
+      </div>
+      <div class="barWrap">
+        <span class="icon">🔧</span>
+        <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+      </div>
     </div>
+
+    <div id="odo">ODO 0.0 mi</div>
   </div>
 
-  <div id="odo">ODO 0.0 mi</div>
 </div>
 
 <script src="script.js"></script>
 
 <script>
+/* ===== RPM GAUGE ===== */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
 let rpmSmooth = 0;
@@ -159,48 +177,37 @@ let rpmSmooth = 0;
 function drawRPM(ratio) {
   rpmSmooth += (ratio - rpmSmooth) * 0.15;
 
-  const cx = 110, cy = 110, r = 90;
-  ctx.clearRect(0,0,220,220);
+  const cx = 90, cy = 90, r = 75;
+  ctx.clearRect(0,0,180,180);
 
-  // outer ring
   ctx.strokeStyle = "#222";
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 5;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI*2);
   ctx.stroke();
 
-  // ticks + numbers
   for (let i = 0; i <= 8; i++) {
     const ang = (-130 + i * 32.5) * Math.PI/180;
-    const red = i >= 7;
-    ctx.strokeStyle = red ? "#ff2a2a" : "#aaa";
+    ctx.strokeStyle = i >= 7 ? "#ff2a2a" : "#aaa";
     ctx.lineWidth = 2;
-
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(ang)*(r-8), cy + Math.sin(ang)*(r-8));
-    ctx.lineTo(cx + Math.cos(ang)*(r-2), cy + Math.sin(ang)*(r-2));
+    ctx.moveTo(cx + Math.cos(ang)*(r-6), cy + Math.sin(ang)*(r-6));
+    ctx.lineTo(cx + Math.cos(ang)*(r-1), cy + Math.sin(ang)*(r-1));
     ctx.stroke();
-
-    ctx.fillStyle = "#aaa";
-    ctx.font = "10px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(i, cx + Math.cos(ang)*(r-18), cy + Math.sin(ang)*(r-18));
   }
 
-  // needle
-  const needleAng = (-130 + rpmSmooth * 260) * Math.PI/180;
+  const needle = (-130 + rpmSmooth * 260) * Math.PI/180;
   ctx.strokeStyle = "#ff2a2a";
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(needleAng)*(r-20),
-             cy + Math.sin(needleAng)*(r-20));
+  ctx.lineTo(cx + Math.cos(needle)*(r-15),
+             cy + Math.sin(needle)*(r-15));
   ctx.stroke();
 
   ctx.fillStyle = "#ff2a2a";
   ctx.beginPath();
-  ctx.arc(cx, cy, 4, 0, Math.PI*2);
+  ctx.arc(cx, cy, 3, 0, Math.PI*2);
   ctx.fill();
 
   document.getElementById("rpmText").innerText =
