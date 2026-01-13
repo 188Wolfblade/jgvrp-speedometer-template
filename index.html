@@ -9,7 +9,7 @@
 
 <div id="bmw-speedo">
 
-  <!-- RPM ANALOG -->
+  <!-- RPM -->
   <canvas id="rpmCanvas" width="260" height="260"></canvas>
 
   <!-- SPEED -->
@@ -21,27 +21,76 @@
   <!-- GEAR -->
   <div id="gear">N</div>
 
-  <!-- STATUS -->
-  <div id="status">
-    <span id="fuel">⛽ 100%</span>
-    <span id="engine">🔧 100%</span>
+  <!-- BARS -->
+  <div id="bars">
+    <div class="bar">
+      <div class="bar-fill" id="fuel-bar"></div>
+    </div>
+    <div class="bar">
+      <div class="bar-fill engine" id="engine-bar"></div>
+    </div>
   </div>
 
 </div>
 
 <script src="script.js"></script>
+
 <script>
+/* ========= RPM SMOOTH ========= */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
+let rpmSmooth = 0;
 
-function drawRPM(value = 0) {
+function drawRPM(target = 0) {
+  rpmSmooth += (target - rpmSmooth) * 0.15;
+
   ctx.clearRect(0,0,260,260);
   ctx.lineWidth = 10;
-  ctx.strokeStyle = value > 0.8 ? "#ff3b3b" : "#00bfff";
+  ctx.strokeStyle = rpmSmooth > 0.85 ? "#ff3b3b" : "#00bfff";
+  ctx.shadowBlur = rpmSmooth > 0.85 ? 20 : 0;
+  ctx.shadowColor = ctx.strokeStyle;
+
   ctx.beginPath();
-  ctx.arc(130,130,110,Math.PI,Math.PI + Math.PI * value);
+  ctx.arc(130,130,110,Math.PI,Math.PI + Math.PI * rpmSmooth);
   ctx.stroke();
 }
+
+/* ========= OVERRIDES (SAFE) ========= */
+const _setRPM = window.setRPM;
+window.setRPM = (rpm) => {
+  drawRPM(rpm);
+  _setRPM(rpm);
+};
+
+const _setSpeed = window.setSpeed;
+window.setSpeed = (spd) => {
+  document.getElementById("speed").innerText = Math.round(spd * 2.23694);
+  _setSpeed(spd);
+};
+
+const _setGear = window.setGear;
+window.setGear = (g) => {
+  const el = document.getElementById("gear");
+  el.innerText = g;
+  el.classList.add("flash");
+  setTimeout(()=>el.classList.remove("flash"),150);
+  _setGear(g);
+};
+
+const _setFuel = window.setFuel;
+window.setFuel = (f) => {
+  document.getElementById("fuel-bar").style.width = (f*100)+"%";
+  _setFuel(f);
+};
+
+const _setHealth = window.setHealth;
+window.setHealth = (h) => {
+  document.getElementById("engine-bar").style.width = (h*100)+"%";
+  _setHealth(h);
+};
+
+/* LOCK MPH */
+setSpeedMode(1);
 </script>
 
 </body>
