@@ -1,48 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BMW Speedometer</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-<div id="bmw-speedo">
-
-  <!-- RPM ANALOG -->
-  <canvas id="rpmCanvas" width="260" height="260"></canvas>
-
-  <!-- SPEED -->
-  <div id="speed-box">
-    <div id="speed">0</div>
-    <div id="unit">MPH</div>
-  </div>
-
-  <!-- GEAR -->
-  <div id="gear">N</div>
-
-  <!-- STATUS -->
-  <div id="status">
-    <span id="fuel">⛽ 100%</span>
-    <span id="engine">🔧 100%</span>
-  </div>
-
-</div>
-
-<script src="script.js"></script>
-<script>
-const canvas = document.getElementById("rpmCanvas");
-const ctx = canvas.getContext("2d");
-
-function drawRPM(value = 0) {
-  ctx.clearRect(0,0,260,260);
-  ctx.lineWidth = 10;
-  ctx.strokeStyle = value > 0.8 ? "#ff3b3b" : "#00bfff";
-  ctx.beginPath();
-  ctx.arc(130,130,110,Math.PI,Math.PI + Math.PI * value);
-  ctx.stroke();
+body {
+  margin: 0;
+  background: transparent;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
-</script>
 
-</body>
-</html>
+#bmw-speedo {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #111 40%, #000 75%);
+  box-shadow:
+    inset 0 0 25px rgba(0,191,255,0.3),
+    0 0 30px rgba(0,191,255,0.25);
+  color: white;
+}
+
+/* RPM */
+#rpmCanvas {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+/* SPEED */
+#speed-box {
+  position: absolute;
+  bottom: 90px;
+  width: 100%;
+  text-align: center;
+}
+
+#speed {
+  font-size: 58px;
+  font-weight: 700;
+}
+
+#unit {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* GEAR */
+#gear {
+  position: absolute;
+  top: 20px;
+  right: 26px;
+  font-size: 34px;
+  font-weight: bold;
+  color: #00bfff;
+  text-shadow: 0 0 12px #00bfff;
+}
+
+/* STATUS */
+#status {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  opacity: 0.85;
+}
