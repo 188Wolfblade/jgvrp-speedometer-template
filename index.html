@@ -2,29 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BMW Speedometer</title>
+  <title>BMW M Speedometer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div id="bmw-speedo">
+<div id="bmw-speedo" class="m-mode">
 
-  <!-- RPM -->
   <canvas id="rpmCanvas" width="260" height="260"></canvas>
 
-  <!-- SPEED -->
   <div id="speed-box">
     <div id="speed">0</div>
     <div id="unit">MPH</div>
   </div>
 
-  <!-- GEAR -->
   <div id="gear">N</div>
 
-  <!-- BARS -->
   <div id="bars">
     <div class="bar">
-      <div class="bar-fill" id="fuel-bar"></div>
+      <div class="bar-fill fuel" id="fuel-bar"></div>
     </div>
     <div class="bar">
       <div class="bar-fill engine" id="engine-bar"></div>
@@ -36,18 +32,20 @@
 <script src="script.js"></script>
 
 <script>
-/* ========= RPM SMOOTH ========= */
+/* ===== RPM BMW M ===== */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
 let rpmSmooth = 0;
 
 function drawRPM(target = 0) {
-  rpmSmooth += (target - rpmSmooth) * 0.15;
+  rpmSmooth += (target - rpmSmooth) * 0.18;
 
   ctx.clearRect(0,0,260,260);
-  ctx.lineWidth = 10;
-  ctx.strokeStyle = rpmSmooth > 0.85 ? "#ff3b3b" : "#00bfff";
-  ctx.shadowBlur = rpmSmooth > 0.85 ? 20 : 0;
+  ctx.lineWidth = 12;
+
+  const redline = rpmSmooth > 0.8;
+  ctx.strokeStyle = redline ? "#ff2a2a" : "#ff5555";
+  ctx.shadowBlur = redline ? 30 : 15;
   ctx.shadowColor = ctx.strokeStyle;
 
   ctx.beginPath();
@@ -55,7 +53,7 @@ function drawRPM(target = 0) {
   ctx.stroke();
 }
 
-/* ========= OVERRIDES (SAFE) ========= */
+/* ===== SAFE OVERRIDES ===== */
 const _setRPM = window.setRPM;
 window.setRPM = (rpm) => {
   drawRPM(rpm);
@@ -73,7 +71,7 @@ window.setGear = (g) => {
   const el = document.getElementById("gear");
   el.innerText = g;
   el.classList.add("flash");
-  setTimeout(()=>el.classList.remove("flash"),150);
+  setTimeout(()=>el.classList.remove("flash"),180);
   _setGear(g);
 };
 
@@ -89,8 +87,7 @@ window.setHealth = (h) => {
   _setHealth(h);
 };
 
-/* LOCK MPH */
-setSpeedMode(1);
+setSpeedMode(1); // LOCK MPH
 </script>
 
 </body>
