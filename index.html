@@ -2,37 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BMW M Speedometer</title>
+  <title>BMW M Track Speedometer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div id="bmw-speedo" class="m-mode">
+<div id="bmw-speedo" class="m-track">
 
-  <canvas id="rpmCanvas" width="260" height="260"></canvas>
+  <!-- RPM ANALOG -->
+  <canvas id="rpmCanvas" width="220" height="220"></canvas>
 
+  <!-- RPM NUMERIC -->
+  <div id="rpm-num">0 RPM</div>
+
+  <!-- SPEED -->
   <div id="speed-box">
     <div id="speed">0</div>
     <div id="unit">MPH</div>
   </div>
 
+  <!-- GEAR -->
   <div id="gear">N</div>
 
+  <!-- BARS -->
   <div id="bars">
-    <div class="bar">
-      <div class="bar-fill fuel" id="fuel-bar"></div>
+    <div class="bar-wrap">
+      <span class="icon">⛽</span>
+      <div class="bar"><div class="bar-fill fuel" id="fuel-bar"></div></div>
     </div>
-    <div class="bar">
-      <div class="bar-fill engine" id="engine-bar"></div>
+    <div class="bar-wrap">
+      <span class="icon">🔧</span>
+      <div class="bar"><div class="bar-fill engine" id="engine-bar"></div></div>
     </div>
   </div>
+
+  <!-- ODOMETER -->
+  <div id="odo">ODO 0.0 mi</div>
 
 </div>
 
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM BMW M ===== */
+/* ===== RPM ===== */
 const canvas = document.getElementById("rpmCanvas");
 const ctx = canvas.getContext("2d");
 let rpmSmooth = 0;
@@ -40,30 +52,30 @@ let rpmSmooth = 0;
 function drawRPM(target = 0) {
   rpmSmooth += (target - rpmSmooth) * 0.18;
 
-  ctx.clearRect(0,0,260,260);
-  ctx.lineWidth = 12;
+  ctx.clearRect(0,0,220,220);
+  ctx.lineWidth = 9;
 
-  const redline = rpmSmooth > 0.8;
-  ctx.strokeStyle = redline ? "#ff2a2a" : "#ff5555";
-  ctx.shadowBlur = redline ? 30 : 15;
+  const red = rpmSmooth > 0.8;
+  ctx.strokeStyle = red ? "#ff2a2a" : "#ff5555";
+  ctx.shadowBlur = red ? 22 : 10;
   ctx.shadowColor = ctx.strokeStyle;
 
   ctx.beginPath();
-  ctx.arc(130,130,110,Math.PI,Math.PI + Math.PI * rpmSmooth);
+  ctx.arc(110,110,95,Math.PI,Math.PI + Math.PI * rpmSmooth);
   ctx.stroke();
+
+  document.getElementById("rpm-num").innerText =
+    Math.round(rpmSmooth * 8000) + " RPM";
 }
 
 /* ===== SAFE OVERRIDES ===== */
 const _setRPM = window.setRPM;
-window.setRPM = (rpm) => {
-  drawRPM(rpm);
-  _setRPM(rpm);
-};
+window.setRPM = (rpm) => { drawRPM(rpm); _setRPM(rpm); };
 
 const _setSpeed = window.setSpeed;
-window.setSpeed = (spd) => {
-  document.getElementById("speed").innerText = Math.round(spd * 2.23694);
-  _setSpeed(spd);
+window.setSpeed = (s) => {
+  document.getElementById("speed").innerText = Math.round(s * 2.23694);
+  _setSpeed(s);
 };
 
 const _setGear = window.setGear;
@@ -71,7 +83,7 @@ window.setGear = (g) => {
   const el = document.getElementById("gear");
   el.innerText = g;
   el.classList.add("flash");
-  setTimeout(()=>el.classList.remove("flash"),180);
+  setTimeout(()=>el.classList.remove("flash"),150);
   _setGear(g);
 };
 
@@ -87,7 +99,13 @@ window.setHealth = (h) => {
   _setHealth(h);
 };
 
-setSpeedMode(1); // LOCK MPH
+const _setOdo = window.setOdometer;
+window.setOdometer = (d) => {
+  document.getElementById("odo").innerText = "ODO " + d.toFixed(1) + " mi";
+  _setOdo(d);
+};
+
+setSpeedMode(1); // MPH LOCK
 </script>
 
 </body>
