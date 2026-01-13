@@ -4,86 +4,112 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-#bmw-speedo.m-mode {
+#bmw-speedo.m-track {
   position: fixed;
-  bottom: 42px;
-  right: 42px;
-  width: 300px;
-  height: 300px;
+  bottom: 32px;
+  right: 32px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, #1a0000 35%, #000 75%);
+  background: radial-gradient(circle, #120000 40%, #000 75%);
   box-shadow:
-    inset 0 0 35px rgba(255,40,40,0.45),
-    0 0 40px rgba(255,40,40,0.35);
+    inset 0 0 22px rgba(255,40,40,0.35),
+    0 0 28px rgba(255,40,40,0.25);
   color: white;
 }
 
 /* RPM */
 #rpmCanvas {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 10px;
+  left: 10px;
+}
+
+#rpm-num {
+  position: absolute;
+  top: 60px;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.85;
 }
 
 /* SPEED */
 #speed-box {
   position: absolute;
-  bottom: 95px;
+  bottom: 70px;
   width: 100%;
   text-align: center;
 }
 
 #speed {
-  font-size: 60px;
+  font-size: 44px;
   font-weight: 800;
-  letter-spacing: 1px;
 }
 
 #unit {
-  font-size: 13px;
+  font-size: 11px;
   opacity: 0.7;
 }
 
 /* GEAR */
 #gear {
   position: absolute;
-  top: 22px;
-  right: 26px;
-  font-size: 36px;
+  top: 16px;
+  right: 18px;
+  font-size: 30px;
   font-weight: bold;
   color: #ff2a2a;
-  text-shadow: 0 0 14px #ff2a2a;
+  text-shadow: 0 0 10px #ff2a2a;
 }
 
 #gear.flash {
   color: white;
-  text-shadow: 0 0 30px #ff2a2a;
 }
 
 /* BARS */
 #bars {
   position: absolute;
-  bottom: 20px;
+  bottom: 28px;
   width: 80%;
   left: 10%;
 }
 
+.bar-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.icon {
+  width: 18px;
+  font-size: 12px;
+}
+
 .bar {
-  height: 7px;
-  background: #220000;
-  border-radius: 8px;
-  margin-bottom: 7px;
+  flex: 1;
+  height: 5px;
+  background: #250000;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .bar-fill.fuel {
   height: 100%;
   background: linear-gradient(90deg, #ff5555, #ff0000);
-  transition: width 0.25s ease;
 }
 
 .bar-fill.engine {
   height: 100%;
   background: linear-gradient(90deg, #ffaa00, #ff2a2a);
-  transition: width 0.25s ease;
+}
+
+/* ODOMETER */
+#odo {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.6;
 }
