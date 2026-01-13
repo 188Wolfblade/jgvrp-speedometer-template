@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speedometer Template</title>
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8" />
+  <title>BMW Speedometer</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <main class="speedometer">
-        <section>
-            <dl>
-                <dt>Engine</dt>
-                <dd id="engine">&nbsp;</dd>
-                <dt>Speed</dt>
-                <dd id="speed">&nbsp;</dd>
-                <dt>RPM</dt>
-                <dd id="rpm">&nbsp;</dd>
-                <dt>Fuel</dt>
-                <dd id="fuel">&nbsp;</dd>
-                <dt>Health</dt>
-                <dd id="health">&nbsp;</dd>
-            </dl>
-        </section>
-        <section>
-            <dl>
-                <dt>Gear</dt>
-                <dd id="gear">&nbsp;</dd>
-                <dt>Headlights</dt>
-                <dd id="headlights">&nbsp;</dd>
-                <dt>Indicators</dt>
-                <dd id="indicators">&nbsp;</dd>
-                <dt>Seatbelts</dt>
-                <dd id="seatbelts">&nbsp;</dd>
-                <dt>Odometer</dt>
-                <dd id="odometer">&nbsp;</dd>
-            </dl>
-        </section>
-    </main>
-    <script src="/script.js"></script>
+
+<div id="bmw-speedo">
+
+  <!-- RPM ANALOG -->
+  <canvas id="rpmCanvas" width="260" height="260"></canvas>
+
+  <!-- SPEED -->
+  <div id="speed-box">
+    <div id="speed">0</div>
+    <div id="unit">MPH</div>
+  </div>
+
+  <!-- GEAR -->
+  <div id="gear">N</div>
+
+  <!-- STATUS -->
+  <div id="status">
+    <span id="fuel">⛽ 100%</span>
+    <span id="engine">🔧 100%</span>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script>
+const canvas = document.getElementById("rpmCanvas");
+const ctx = canvas.getContext("2d");
+
+function drawRPM(value = 0) {
+  ctx.clearRect(0,0,260,260);
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = value > 0.8 ? "#ff3b3b" : "#00bfff";
+  ctx.beginPath();
+  ctx.arc(130,130,110,Math.PI,Math.PI + Math.PI * value);
+  ctx.stroke();
+}
+</script>
+
 </body>
 </html>
