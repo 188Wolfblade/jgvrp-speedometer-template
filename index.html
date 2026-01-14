@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD Stable A</title>
+<title>SUV HUD Stable Clean</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <!-- WELCOME TEXT -->
+    <!-- STATIC TEXT -->
     <div id="welcome">Happy Driving, Chief Darek</div>
   </div>
 
@@ -46,7 +46,7 @@
 <script src="script.js"></script>
 
 <script>
-/* ================= RPM ================= */
+/* ================= RPM (BMW LOGIC, CLEAN FRAME) ================= */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
@@ -54,79 +54,82 @@ function drawRPM(v) {
   rpmSmooth += (v - rpmSmooth) * 0.12;
   ctx.clearRect(0,0,140,140);
 
-  const cx=70, cy=70, r=58;
+  const cx = 70, cy = 70, r = 58;
 
-  // ring
-  ctx.strokeStyle="#5a0000";
-  ctx.lineWidth=5;
+  // frame ring
+  ctx.strokeStyle = "#ff2a2a";
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
 
   // scale + numbers
-  for(let i=0;i<=8;i++){
-    const a=(-130+i*32.5)*Math.PI/180;
-    ctx.strokeStyle=i>=7?"#ff4444":"#ff9999";
-    ctx.lineWidth=2;
+  for (let i = 0; i <= 8; i++) {
+    const a = (-130 + i * 32.5) * Math.PI / 180;
+    ctx.strokeStyle = i >= 7 ? "#ff5555" : "#ffaaaa";
+    ctx.lineWidth = 2;
+
     ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(a)*(r-6),cy+Math.sin(a)*(r-6));
-    ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    ctx.moveTo(
+      cx + Math.cos(a) * (r - 6),
+      cy + Math.sin(a) * (r - 6)
+    );
+    ctx.lineTo(
+      cx + Math.cos(a) * r,
+      cy + Math.sin(a) * r
+    );
     ctx.stroke();
 
-    if(i>0){
-      ctx.fillStyle="#ffdcdc";
-      ctx.font="10px Arial";
-      ctx.textAlign="center";
-      ctx.textBaseline="middle";
+    if (i > 0) {
+      ctx.fillStyle = "#ffdcdc";
+      ctx.font = "10px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       ctx.fillText(
         i,
-        cx+Math.cos(a)*(r-16),
-        cy+Math.sin(a)*(r-16)
+        cx + Math.cos(a) * (r - 16),
+        cy + Math.sin(a) * (r - 16)
       );
     }
   }
 
   // needle
-  const n=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#ff2a2a";
-  ctx.lineWidth=3;
+  const n = (-130 + rpmSmooth * 260) * Math.PI / 180;
+  ctx.strokeStyle = "#ff2a2a";
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+Math.cos(n)*(r-12),cy+Math.sin(n)*(r-12));
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(
+    cx + Math.cos(n) * (r - 12),
+    cy + Math.sin(n) * (r - 12)
+  );
   ctx.stroke();
 }
 
-/* ================= HOOKS (UNCHANGED) ================= */
-let speedMPH=0;
-let gearRaw=0;
-let welcomeShown=false;
+/* ===== JGVRP HOOKS (UNCHANGED) ===== */
+let speedMPH = 0;
+let gearRaw = 0;
 
-window.setRPM=v=>drawRPM(v);
+window.setRPM = v => drawRPM(v);
 
-window.setSpeed=s=>{
-  speedMPH=Math.round(s*2.23694);
-  speed.innerText=speedMPH;
-  updateGear();
-
-  if(speedMPH>0 && !welcomeShown){
-    welcomeShown=true;
-    welcome.classList.add("show");
-    setTimeout(()=>welcome.classList.remove("show"),10000);
-  }
-};
-
-window.setGear=g=>{
-  gearRaw=g;
+window.setSpeed = s => {
+  speedMPH = Math.round(s * 2.23694);
+  speed.innerText = speedMPH;
   updateGear();
 };
 
-window.setFuel=f=>fuelBar.style.width=(f*100)+"%";
-window.setHealth=h=>engineBar.style.width=(h*100)+"%";
+window.setGear = g => {
+  gearRaw = g;
+  updateGear();
+};
 
-function updateGear(){
-  if(speedMPH===0) gear.innerText="N";
-  else if(gearRaw===0) gear.innerText="R";
-  else gear.innerText=gearRaw;
+window.setFuel = f => fuelBar.style.width = (f * 100) + "%";
+window.setHealth = h => engineBar.style.width = (h * 100) + "%";
+
+function updateGear() {
+  if (speedMPH === 0) gear.innerText = "N";
+  else if (gearRaw === 0) gear.innerText = "R";
+  else gear.innerText = gearRaw;
 }
 
 setSpeedMode(1);
