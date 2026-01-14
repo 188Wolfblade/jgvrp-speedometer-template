@@ -2,108 +2,117 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD</title>
+<title>SUV HUD Red</title>
 <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <div id="hud">
 
   <!-- RPM -->
   <div id="rpmBox">
-    <canvas id="rpmCanvas" width="120" height="120"></canvas>
+    <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
-  <!-- SPEED / GEAR -->
+  <!-- SPEED -->
   <div id="speedBox">
     <div id="gear">N</div>
     <div id="speed">0</div>
 
-    <div class="barRow">
-      ⛽
-      <div class="bar"><div id="fuelBar"></div></div>
-    </div>
+    <div id="bars">
+      <div class="barRow">
+        <span class="barIcon">⛽</span>
+        <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
+      </div>
 
-    <div class="barRow">
-      🔧
-      <div class="bar"><div id="engineBar"></div></div>
+      <div class="barRow">
+        <span class="barIcon">🔧</span>
+        <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- REQUIRED BINDS -->
-<div id="rpm" hidden></div>
-<div id="engine" hidden></div>
-
 <script src="script.js"></script>
 
 <script>
-/* ===== BMW LOGIC COPY (DO NOT TOUCH) ===== */
+/* ===== BMW RPM LOGIC (COPY EXACT) ===== */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
-let lastSpeed = 0;
 
-function drawRPM(rpm) {
-  if (rpm < 0.02) rpm = 0; // 🔑 FIX mesin mati
-  rpmSmooth += (rpm - rpmSmooth) * 0.15;
+function drawRPM(r) {
+  rpmSmooth += (r - rpmSmooth) * 0.12;
+  ctx.clearRect(0, 0, 140, 140);
 
-  ctx.clearRect(0,0,120,120);
-  const cx=60, cy=60, r=46;
+  const cx = 70, cy = 70, rad = 58;
 
-  // background arc
-  ctx.strokeStyle="#330000";
-  ctx.lineWidth=6;
+  ctx.strokeStyle = "#3a0a0a";
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.arc(cx, cy, rad, 0, Math.PI * 2);
   ctx.stroke();
 
-  // ticks
-  for(let i=0;i<=7;i++){
-    const a=(-130+i*37)*Math.PI/180;
-    ctx.strokeStyle=i>=6?"#ff3333":"#ffaaaa";
-    ctx.lineWidth=2;
+  for (let i = 1; i <= 8; i++) {
+    const ang = (-130 + i * 32.5) * Math.PI / 180;
+    ctx.strokeStyle = i >= 7 ? "#ff3333" : "#ff9999";
+    ctx.lineWidth = 2;
+
     ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(a)*(r-8),cy+Math.sin(a)*(r-8));
-    ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    ctx.moveTo(cx + Math.cos(ang) * (rad - 6),
+               cy + Math.sin(ang) * (rad - 6));
+    ctx.lineTo(cx + Math.cos(ang) * rad,
+               cy + Math.sin(ang) * rad);
     ctx.stroke();
   }
 
-  // needle
-  const ang=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#ff2222";
-  ctx.lineWidth=3;
+  const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
+  ctx.strokeStyle = "#ff3333";
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+Math.cos(ang)*(r-12),cy+Math.sin(ang)*(r-12));
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(needle) * (rad - 12),
+             cy + Math.sin(needle) * (rad - 12));
   ctx.stroke();
 }
 
-/* ===== HOOKS (BMW STYLE) ===== */
+/* ===== BMW HOOKS (COPY EXACT) ===== */
+let speedMPH = 0;
+let gearRaw = 0;
+
 window.setRPM = v => drawRPM(v);
 
-window.setFuel = f =>
-  fuelBar.style.width = (f*100)+"%";
-
-window.setHealth = h =>
-  engineBar.style.width = (h*100)+"%";
-
-/* GEAR FIX */
-const speedEl = document.getElementById("speed");
-const gearEl  = document.getElementById("gear");
-
-const speedObserver = new MutationObserver(()=>{
-  const s = parseInt(speedEl.innerText) || 0;
-  lastSpeed = s;
-});
-
-speedObserver.observe(speedEl,{childList:true});
+window.setSpeed = s => {
+  speedMPH = Math.round(s * 2.23694);
+  speed.innerText = speedMPH;
+  updateGear();
+};
 
 window.setGear = g => {
-  if(lastSpeed < 0) gearEl.innerText="R";
-  else if(lastSpeed === 0) gearEl.innerText="N";
-  else gearEl.innerText = g;
+  gearRaw = g;
+  updateGear();
 };
+
+window.setFuel = f => {
+  fuelBar.style.width = (f * 100) + "%";
+};
+
+window.setHealth = h => {
+  engineBar.style.width = (h * 100) + "%";
+};
+
+function updateGear() {
+  if (speedMPH === 0) {
+    gear.innerText = "N";
+  } else if (gearRaw === 0) {
+    gear.innerText = "R";
+  } else {
+    gear.innerText = gearRaw;
+  }
+}
+
+setSpeedMode(1);
 </script>
 
 </body>
