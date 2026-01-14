@@ -1,61 +1,71 @@
 body {
     margin: 0;
     background: transparent;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .hud {
     position: absolute;
-    bottom: 40px;
-    right: 40px;
+    bottom: 60px;
+    right: 60px;
     display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #fff;
+    align-items: flex-end;
+    gap: 16px;
 }
 
 /* RPM */
 .rpm-container {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
 }
 
-.rpm-ring {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 6px solid #400;
-    position: relative;
+.rpm-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.rpm-bg {
+    fill: none;
+    stroke: #1a1a1a;
+    stroke-width: 8;
+}
+
+.rpm-scale {
+    fill: none;
+    stroke: #ff2a2a;
+    stroke-width: 6;
+    stroke-linecap: round;
 }
 
 .rpm-needle {
     position: absolute;
     width: 2px;
-    height: 50%;
+    height: 48%;
     background: red;
-    bottom: 50%;
     left: 50%;
+    bottom: 50%;
     transform-origin: bottom;
     transform: rotate(-135deg);
-    transition: transform 0.15s linear;
+    transition: transform 0.08s linear;
 }
 
-.rpm-scale::before {
-    content: "";
+.gear {
     position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 6px dashed rgba(255,0,0,0.4);
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
 }
 
 /* SPEED */
 .speed-container {
-    position: relative;
-    background: rgba(20,0,0,0.85);
-    border: 2px solid red;
-    border-radius: 12px;
-    padding: 14px 22px;
+    background: rgba(15, 0, 0, 0.85);
+    border: 2px solid #ff2a2a;
+    border-radius: 14px;
+    padding: 14px 20px;
     min-width: 120px;
     text-align: center;
 }
@@ -68,51 +78,41 @@ body {
 
 .speed-unit {
     font-size: 14px;
-    opacity: 0.8;
     margin-top: 4px;
+    opacity: 0.85;
 }
 
-.gear {
-    margin-top: 6px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-}
-
-/* STATUS */
-.status {
+/* Bars */
+.bars {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
-.status-item {
+.bar-item {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.icon {
-    font-size: 16px;
-}
-
 .bar {
     width: 80px;
     height: 8px;
-    background: #222;
+    background: #333;
     border-radius: 4px;
     overflow: hidden;
 }
 
-.fill {
+.bar div {
     height: 100%;
-    width: 60%;
+    width: 100%;
 }
 
-.fill.fuel {
+#fuelBar {
     background: #ffcc00;
 }
 
-.fill.health {
-    background: #ff4444;
+#healthBar {
+    background: #ff3b3b;
 }
