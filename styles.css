@@ -17,13 +17,12 @@ body {
 #rpmCircle {
   width: 150px;
   height: 150px;
-  background: transparent;
 }
 
 /* SPEED BOX */
 #speedBox {
   width: 200px;
-  height: 230px;
+  height: 240px;
   background: #0b0000;
   border: 2px solid #ff2a2a;
   border-radius: 10px;
@@ -56,10 +55,10 @@ body {
   margin-top: -2px;
 }
 
-/* Bars */
+/* Bars – LOWER */
 #bars {
   position: absolute;
-  bottom: 70px;
+  bottom: 86px; /* TURUN LAGI */
   width: 80%;
   left: 10%;
 }
@@ -68,7 +67,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .icon {
@@ -99,7 +98,7 @@ body {
 /* Text */
 #welcome {
   position: absolute;
-  bottom: 18px;
+  bottom: 20px;
   width: 100%;
   text-align: center;
   font-family: "Rage Italic", "Comic Sans MS", cursive;
