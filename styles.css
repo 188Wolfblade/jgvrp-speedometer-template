@@ -1,113 +1,71 @@
 body {
-  margin: 0;
-  background: transparent;
-  font-family: "Segoe UI", Arial, sans-serif;
+  margin:0;
+  background:transparent;
+  font-family:Arial, sans-serif;
 }
 
 #hud {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
+  position:fixed;
+  right:30px;
+  bottom:30px;
+  display:flex;
+  gap:12px;
+  color:white;
 }
 
-.circle {
-  position: relative;
-  border-radius: 50%;
-  color: white;
-}
-
-/* RPM (lebih kecil, kokoh) */
-#rpmCircle {
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, #220000 45%, #000 80%);
-  box-shadow:
-    inset 0 0 12px rgba(255,60,60,0.4),
-    0 0 16px rgba(255,40,40,0.3);
-}
-
-/* SPEED (utama) */
-#speedCircle {
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, #2a0000 40%, #000 85%);
-  box-shadow:
-    inset 0 0 24px rgba(255,70,70,0.45),
-    0 0 30px rgba(255,50,50,0.35);
-}
-
-/* GEAR */
-#gear {
-  position: absolute;
-  top: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 800;
-  color: #ff5555;
-  text-shadow: 0 0 10px #ff3333;
+/* RPM */
+#rpmBox {
+  width:130px;
+  height:130px;
+  background:#120000;
+  border-radius:14px;
+  box-shadow:inset 0 0 10px #ff2222;
 }
 
 /* SPEED */
-#speed {
-  position: absolute;
-  top: 64px;
-  width: 100%;
-  text-align: center;
-  font-size: 48px;
-  font-weight: 900;
-  color: #ffeaea;
+#speedBox {
+  width:200px;
+  background:#160000;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:inset 0 0 16px #ff3333;
 }
 
-/* UNIT */
-#unit {
-  position: absolute;
-  top: 120px;
-  width: 100%;
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 1px;
-  opacity: 0.7;
+#gear {
+  font-size:26px;
+  font-weight:bold;
+  color:#ff4444;
+}
+
+#speed {
+  font-size:48px;
+  font-weight:900;
+  margin-bottom:8px;
 }
 
 /* BARS */
-#bars {
-  position: absolute;
-  bottom: 42px;
-  width: 82%;
-  left: 9%;
-}
-
 .barRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.barIcon {
-  font-size: 12px;
-  width: 14px;
-  text-align: center;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  margin-bottom:6px;
 }
 
 .bar {
-  flex: 1;
-  height: 6px;
-  background: #2a0000;
-  border-radius: 6px;
-  overflow: hidden;
+  flex:1;
+  height:6px;
+  background:#300000;
+  border-radius:4px;
+  overflow:hidden;
 }
 
-.fillFuel {
-  height: 100%;
-  background: linear-gradient(90deg, #ff7777, #ff0000);
+#fuelBar {
+  height:100%;
+  background:#ff4444;
 }
 
-.fillEngine {
-  height: 100%;
-  background: linear-gradient(90deg, #ffb347, #ff3333);
+#engineBar {
+  height:100%;
+  background:#ffaa44;
 }
