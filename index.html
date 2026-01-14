@@ -55,7 +55,6 @@ function drawRPM(v) {
 
   const cx = 70, cy = 70, r = 58;
 
-  /* METAL BACKGROUND */
   const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, r);
   grad.addColorStop(0, "#2a2a2a");
   grad.addColorStop(0.6, "#0f0f0f");
@@ -65,12 +64,10 @@ function drawRPM(v) {
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
 
-  /* METAL RING */
   ctx.strokeStyle = "#ff2a2a";
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  /* SCALE */
   for (let i = 0; i <= 8; i++) {
     const a = (-130 + i * 32.5) * Math.PI / 180;
     ctx.strokeStyle = i >= 7 ? "#ff4444" : "#cccccc";
@@ -100,7 +97,6 @@ function drawRPM(v) {
     }
   }
 
-  /* NEEDLE */
   const n = (-130 + rpmSmooth * 260) * Math.PI / 180;
   ctx.strokeStyle = "#ff2a2a";
   ctx.lineWidth = 3;
@@ -113,7 +109,7 @@ function drawRPM(v) {
   ctx.stroke();
 }
 
-/* ===== HOOKS (UNCHANGED / STABLE) ===== */
+/* ===== STABLE HOOKS ===== */
 let speedMPH = 0;
 let gearRaw = 0;
 
