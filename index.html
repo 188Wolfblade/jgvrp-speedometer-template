@@ -1,69 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cruiser Speedometer</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<title>SUV Cruiser HUD</title>
+<link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<div class="speedometer">
+<div id="hud">
 
   <!-- RPM -->
-  <div class="rpm-container">
-    <div class="rpm">
-      <div class="ticks"></div>
-      <div class="needle" id="rpm-needle"></div>
-      <div class="center"></div>
+  <div id="rpmCircle" class="circle">
+    <canvas id="rpmCanvas" width="130" height="130"></canvas>
+  </div>
 
-      <!-- labels -->
-      <span class="label l0">0</span>
-      <span class="label l1">1</span>
-      <span class="label l2">2</span>
-      <span class="label l3">3</span>
-      <span class="label l4">4</span>
-      <span class="label l5">5</span>
-      <span class="label l6 red">6</span>
-      <span class="label l7 red">7</span>
+  <!-- SPEED -->
+  <div id="speedWrap">
+    <div id="speedCircle" class="circle">
+
+      <div id="gear">N</div>
+      <div id="speed">0</div>
+      <div id="unit">MPH</div>
+
+      <div id="bars">
+        <div class="barRow">
+          <span class="barIcon">⛽</span>
+          <div class="bar">
+            <div id="fuelBar" class="fillFuel"></div>
+          </div>
+        </div>
+
+        <div class="barRow">
+          <span class="barIcon">🔧</span>
+          <div class="bar">
+            <div id="engineBar" class="fillEngine"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- RIGHT SIDE -->
-  <div class="right-panel">
-    <div class="gear" id="gear">N</div>
-
-    <div class="speed-box">
-      <div id="speed">0 MPH</div>
-    </div>
-
-    <div class="status">
-      <div>⛽ <span id="fuel">100%</span></div>
-      <div>🛠 <span id="engine">On</span></div>
-    </div>
-  </div>
 </div>
 
-<!-- hidden bindings -->
-<div id="rpm" hidden></div>
-<div id="health" hidden></div>
-<div id="headlights" hidden></div>
-<div id="indicators" hidden></div>
-<div id="seatbelts" hidden></div>
-<div id="odometer" hidden></div>
+<script src="script.js"></script>
 
 <script>
-/* PURE VISUAL MAPPING (BMW STYLE) */
-const needle = document.getElementById('rpm-needle');
-const rpmText = document.getElementById('rpm');
+/* === EXACT SAME LOGIC AS BMW (UNCHANGED) === */
+const ctx = rpmCanvas.getContext("2d");
+let rpmSmooth = 0;
 
-const observer = new MutationObserver(() => {
-  const v = parseFloat(rpmText.innerText) || 0;
-  const clamped = Math.min(Math.max(v, 0), 1);
-  const deg = -130 + clamped * 260;
-  needle.style.transform = `rotate(${deg}deg)`;
-});
+function drawRPM(r) {
+  rpmSmooth += (r - rpmSmooth) * 0.12;
+  ctx.clearRect(0, 0, 130, 130);
 
-observer.observe(rpmText, { childList: true });
+  const cx = 65, cy = 65, rad = 54;
+
+  ctx.strokeStyle = "#3a0a0a";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+  ctx.stroke();
+
+  for (let i = 1; i <= 8; i++) {
+    const ang = (-130 + i * 32.5) * Math.PI / 180;
+    ctx.strokeStyle = i >= 7 ? "#ff4444" : "#ffaaaa";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(ang) * (rad - 6),
+               cy + Math.sin(ang) * (rad - 6));
+    ctx.lineTo(cx + Math.cos(ang) * rad,
+               cy + Math.sin(ang) * rad);
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffcccc";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      i,
+      cx + Math.cos(ang) * (rad - 16),
+      cy + Math.sin(ang) * (rad - 16)
+    );
+  }
+
+  const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
+  ctx.strokeStyle = "#ff3333";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(needle) * (rad - 12),
+             cy + Math.sin(needle) * (rad - 12));
+  ctx.stroke();
+}
+
+/* === HOOK (SAMA PERSIS) === */
+window.setRPM = v => drawRPM(v);
+window.setFuel = f => fuelBar.style.width = (f * 100) + "%";
+window.setHealth = h => engineBar.style.width = (h * 100) + "%";
 </script>
 
 </body>
