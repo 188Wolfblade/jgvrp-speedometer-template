@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD Stable Clean</title>
+<title>SUV HUD Stable Final</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -37,8 +37,7 @@
       </div>
     </div>
 
-    <!-- STATIC TEXT -->
-    <div id="welcome">Happy Driving, Chief Darek</div>
+    <div id="welcome">Welcome, Chief Darek</div>
   </div>
 
 </div>
@@ -46,7 +45,7 @@
 <script src="script.js"></script>
 
 <script>
-/* ================= RPM (BMW LOGIC, CLEAN FRAME) ================= */
+/* ================= RPM (BMW LOGIC – BLACK BACKGROUND) ================= */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
@@ -56,11 +55,15 @@ function drawRPM(v) {
 
   const cx = 70, cy = 70, r = 58;
 
-  // frame ring
-  ctx.strokeStyle = "#ff2a2a";
-  ctx.lineWidth = 4;
+  // black background circle
+  ctx.fillStyle = "#000";
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+
+  // outer frame
+  ctx.strokeStyle = "#ff2a2a";
+  ctx.lineWidth = 4;
   ctx.stroke();
 
   // scale + numbers
@@ -106,7 +109,7 @@ function drawRPM(v) {
   ctx.stroke();
 }
 
-/* ===== JGVRP HOOKS (UNCHANGED) ===== */
+/* ===== HOOKS (UNCHANGED) ===== */
 let speedMPH = 0;
 let gearRaw = 0;
 
