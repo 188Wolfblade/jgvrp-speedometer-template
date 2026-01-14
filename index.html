@@ -11,24 +11,32 @@
 <div id="hud">
 
   <!-- RPM -->
-  <div id="rpmBox">
-    <canvas id="rpmCanvas" width="140" height="140"></canvas>
+  <div id="rpmCircle">
+    <canvas id="rpmCanvas" width="150" height="150"></canvas>
   </div>
 
   <!-- SPEED -->
   <div id="speedBox">
     <div id="gear">N</div>
-    <div id="speed">0</div>
+
+    <div id="speedWrap">
+      <div id="speed">0</div>
+      <div id="unit">MPH</div>
+    </div>
 
     <div id="bars">
       <div class="barRow">
         <span class="barIcon">⛽</span>
-        <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
+        <div class="bar">
+          <div id="fuelBar" class="fillFuel"></div>
+        </div>
       </div>
 
       <div class="barRow">
         <span class="barIcon">🔧</span>
-        <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
+        <div class="bar">
+          <div id="engineBar" class="fillEngine"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -38,42 +46,62 @@
 <script src="script.js"></script>
 
 <script>
-/* ===== BMW RPM LOGIC (COPY EXACT) ===== */
+/* ===== BMW RPM LOGIC (UNCHANGED) ===== */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
 function drawRPM(r) {
   rpmSmooth += (r - rpmSmooth) * 0.12;
-  ctx.clearRect(0, 0, 140, 140);
+  ctx.clearRect(0, 0, 150, 150);
 
-  const cx = 70, cy = 70, rad = 58;
+  const cx = 75, cy = 75, rad = 62;
 
-  ctx.strokeStyle = "#3a0a0a";
-  ctx.lineWidth = 4;
+  /* outer circle */
+  ctx.strokeStyle = "#5a0f0f";
+  ctx.lineWidth = 8;
   ctx.beginPath();
   ctx.arc(cx, cy, rad, 0, Math.PI * 2);
   ctx.stroke();
 
+  /* ticks + numbers */
   for (let i = 1; i <= 8; i++) {
     const ang = (-130 + i * 32.5) * Math.PI / 180;
-    ctx.strokeStyle = i >= 7 ? "#ff3333" : "#ff9999";
+
+    ctx.strokeStyle = i >= 7 ? "#ff3333" : "#ffaaaa";
     ctx.lineWidth = 2;
 
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(ang) * (rad - 6),
-               cy + Math.sin(ang) * (rad - 6));
-    ctx.lineTo(cx + Math.cos(ang) * rad,
-               cy + Math.sin(ang) * rad);
+    ctx.moveTo(
+      cx + Math.cos(ang) * (rad - 8),
+      cy + Math.sin(ang) * (rad - 8)
+    );
+    ctx.lineTo(
+      cx + Math.cos(ang) * rad,
+      cy + Math.sin(ang) * rad
+    );
     ctx.stroke();
+
+    ctx.fillStyle = i >= 7 ? "#ff4444" : "#ffd6d6";
+    ctx.font = "11px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      i,
+      cx + Math.cos(ang) * (rad - 20),
+      cy + Math.sin(ang) * (rad - 20)
+    );
   }
 
+  /* needle */
   const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
-  ctx.strokeStyle = "#ff3333";
+  ctx.strokeStyle = "#ff2222";
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(needle) * (rad - 12),
-             cy + Math.sin(needle) * (rad - 12));
+  ctx.lineTo(
+    cx + Math.cos(needle) * (rad - 16),
+    cy + Math.sin(needle) * (rad - 16)
+  );
   ctx.stroke();
 }
 
@@ -112,7 +140,7 @@ function updateGear() {
   }
 }
 
-setSpeedMode(1);
+setSpeedMode(1); // MPH
 </script>
 
 </body>
