@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD Stable Final</title>
+<title>SUV HUD Stable Metal</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -45,7 +45,7 @@
 <script src="script.js"></script>
 
 <script>
-/* ================= RPM (BMW LOGIC – BLACK BACKGROUND) ================= */
+/* ================= RPM – METAL TEXTURE ================= */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
@@ -55,21 +55,25 @@ function drawRPM(v) {
 
   const cx = 70, cy = 70, r = 58;
 
-  // black background circle
-  ctx.fillStyle = "#000";
+  /* METAL BACKGROUND */
+  const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, r);
+  grad.addColorStop(0, "#2a2a2a");
+  grad.addColorStop(0.6, "#0f0f0f");
+  grad.addColorStop(1, "#000");
+  ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
 
-  // outer frame
+  /* METAL RING */
   ctx.strokeStyle = "#ff2a2a";
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  // scale + numbers
+  /* SCALE */
   for (let i = 0; i <= 8; i++) {
     const a = (-130 + i * 32.5) * Math.PI / 180;
-    ctx.strokeStyle = i >= 7 ? "#ff5555" : "#ffaaaa";
+    ctx.strokeStyle = i >= 7 ? "#ff4444" : "#cccccc";
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -84,7 +88,7 @@ function drawRPM(v) {
     ctx.stroke();
 
     if (i > 0) {
-      ctx.fillStyle = "#ffdcdc";
+      ctx.fillStyle = "#e0e0e0";
       ctx.font = "10px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -96,7 +100,7 @@ function drawRPM(v) {
     }
   }
 
-  // needle
+  /* NEEDLE */
   const n = (-130 + rpmSmooth * 260) * Math.PI / 180;
   ctx.strokeStyle = "#ff2a2a";
   ctx.lineWidth = 3;
@@ -109,7 +113,7 @@ function drawRPM(v) {
   ctx.stroke();
 }
 
-/* ===== HOOKS (UNCHANGED) ===== */
+/* ===== HOOKS (UNCHANGED / STABLE) ===== */
 let speedMPH = 0;
 let gearRaw = 0;
 
