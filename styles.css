@@ -23,9 +23,10 @@ body {
 /* SPEED BOX */
 #speedBox {
   width: 200px;
-  height: 220px;
+  height: 230px;
   background: #0b0000;
   border: 2px solid #ff2a2a;
+  border-radius: 10px;
   box-shadow: 0 0 16px rgba(255,0,0,0.35);
   position: relative;
   color: white;
@@ -52,12 +53,13 @@ body {
   text-align: center;
   font-size: 12px;
   opacity: 0.7;
+  margin-top: -2px;
 }
 
 /* Bars */
 #bars {
   position: absolute;
-  bottom: 54px;
+  bottom: 70px;
   width: 80%;
   left: 10%;
 }
@@ -78,7 +80,7 @@ body {
   flex: 1;
   height: 6px;
   background: #2a0000;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -97,10 +99,10 @@ body {
 /* Text */
 #welcome {
   position: absolute;
-  bottom: 14px;
+  bottom: 18px;
   width: 100%;
   text-align: center;
-  font-family: "Comic Sans MS", cursive;
-  font-size: 12px;
+  font-family: "Rage Italic", "Comic Sans MS", cursive;
+  font-size: 13px;
   color: white;
 }
