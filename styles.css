@@ -1,118 +1,129 @@
-body {
-    margin: 0;
-    background: transparent;
-    font-family: Arial, Helvetica, sans-serif;
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.hud {
-    position: absolute;
-    bottom: 60px;
-    right: 60px;
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
+body {
+  margin: 0;
+  background: transparent;
+}
+
+/* MAIN POSITION (BMW-like) */
+.speedometer {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  color: #fff;
 }
 
 /* RPM */
-.rpm-container {
-    position: relative;
-    width: 130px;
-    height: 130px;
+.rpm-wrapper {
+  width: 240px;
+  height: 240px;
 }
 
-.rpm-svg {
-    width: 100%;
-    height: 100%;
+.rpm-dial {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #000 55%, #1c1c1c 56%);
+  border: 6px solid #2a2a2a;
+  position: relative;
 }
 
-.rpm-bg {
-    fill: none;
-    stroke: #1a1a1a;
-    stroke-width: 8;
+/* RPM Numbers */
+.rpm-num {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ccc;
 }
 
-.rpm-scale {
-    fill: none;
-    stroke: #ff2a2a;
-    stroke-width: 6;
-    stroke-linecap: round;
-}
+.n1 { top: 18px; left: 112px; }
+.n2 { top: 42px; right: 48px; }
+.n3 { top: 100px; right: 22px; }
+.n4 { bottom: 58px; right: 48px; }
+.n5 { bottom: 28px; left: 112px; }
+.n6 { bottom: 58px; left: 48px; }
 
+/* NEEDLE */
 .rpm-needle {
-    position: absolute;
-    width: 2px;
-    height: 48%;
-    background: red;
-    left: 50%;
-    bottom: 50%;
-    transform-origin: bottom;
-    transform: rotate(-135deg);
-    transition: transform 0.08s linear;
+  position: absolute;
+  width: 4px;
+  height: 96px;
+  background: #ff4040;
+  top: 26px;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(-120deg);
 }
 
+/* CENTER */
+.rpm-center {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #aaa;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* RIGHT PANEL */
+.info-panel {
+  width: 150px;
+}
+
+/* GEAR */
 .gear {
-    position: absolute;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 /* SPEED */
-.speed-container {
-    background: rgba(15, 0, 0, 0.85);
-    border: 2px solid #ff2a2a;
-    border-radius: 14px;
-    padding: 14px 20px;
-    min-width: 120px;
-    text-align: center;
+.speed span {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.speed-value {
-    font-size: 42px;
-    font-weight: bold;
-    color: #ff3b3b;
+.unit {
+  font-size: 12px;
+  opacity: 0.7;
 }
 
-.speed-unit {
-    font-size: 14px;
-    margin-top: 4px;
-    opacity: 0.85;
+/* STATUS */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-/* Bars */
-.bars {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.icon {
+  font-size: 14px;
 }
 
-.bar-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
+/* BAR */
 .bar {
-    width: 80px;
-    height: 8px;
-    background: #333;
-    border-radius: 4px;
-    overflow: hidden;
+  width: 80px;
+  height: 6px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.bar div {
-    height: 100%;
-    width: 100%;
+.fill {
+  height: 100%;
+  width: 60%;
+  background: #4caf50;
 }
 
-#fuelBar {
-    background: #ffcc00;
-}
-
-#healthBar {
-    background: #ff3b3b;
+.fill.engine {
+  background: #ffb300;
 }
