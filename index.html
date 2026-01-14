@@ -2,142 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Agro SUV HUD Stable A</title>
-
-<style>
-body {
-  margin: 0;
-  background: transparent;
-  font-family: Arial, sans-serif;
-}
-
-/* ===== HUD WRAP ===== */
-#hud {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-/* ===== RPM ===== */
-#rpmCircle {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: #0b1b24;
-  box-shadow:
-    inset 0 0 16px rgba(0,160,255,0.45),
-    0 0 20px rgba(0,120,200,0.4);
-  position: relative;
-}
-
-#rpmCanvas {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-}
-
-/* ===== SPEED ===== */
-#speedCircle {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #0d1f2a 40%, #000 85%);
-  box-shadow:
-    inset 0 0 26px rgba(0,160,255,0.45),
-    0 0 30px rgba(0,140,220,0.35);
-  position: relative;
-  color: white;
-}
-
-/* GEAR */
-#gear {
-  position: absolute;
-  top: 22px;
-  width: 100%;
-  text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #9ddcff;
-}
-
-/* SPEED */
-#speed {
-  position: absolute;
-  top: 64px; /* dinaikkan */
-  width: 100%;
-  text-align: center;
-  font-size: 48px;
-  font-weight: 900;
-  color: #e8f6ff;
-}
-
-/* UNIT */
-#unit {
-  position: absolute;
-  top: 118px; /* ikut naik */
-  width: 100%;
-  text-align: center;
-  font-size: 13px;
-  letter-spacing: 1px;
-  opacity: 0.7;
-}
-
-/* ===== BARS ===== */
-#bars {
-  position: absolute;
-  bottom: 34px; /* DITURUNKAN */
-  width: 82%;
-  left: 9%;
-}
-
-.barRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 7px;
-}
-
-.barIcon {
-  font-size: 13px;
-  width: 16px;
-  text-align: center;
-  opacity: 0.85;
-}
-
-.bar {
-  flex: 1;
-  height: 6px;
-  background: #0a2438;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.fillFuel {
-  height: 100%;
-  background: linear-gradient(90deg, #4db8ff, #007bff);
-}
-
-.fillEngine {
-  height: 100%;
-  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
-}
-
-/* ===== TEXT BAWAH ===== */
-#welcomeText {
-  position: absolute;
-  bottom: 6px;
-  width: 100%;
-  text-align: center;
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  font-size: 12px;
-  color: white;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-</style>
+<title>SUV HUD Stable A</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -149,38 +15,38 @@ body {
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
-  <!-- SPEED -->
-  <div id="speedCircle">
+  <!-- SPEED BOX -->
+  <div id="speedBox">
     <div id="gear">N</div>
     <div id="speed">0</div>
     <div id="unit">MPH</div>
 
     <div id="bars">
       <div class="barRow">
-        <span class="barIcon">⛽</span>
+        <span class="icon">⛽</span>
         <div class="bar">
-          <div id="fuelBar" class="fillFuel"></div>
+          <div id="fuelBar" class="fill fuel"></div>
         </div>
       </div>
 
       <div class="barRow">
-        <span class="barIcon">❤️</span>
+        <span class="icon">🔧</span>
         <div class="bar">
-          <div id="engineBar" class="fillEngine"></div>
+          <div id="engineBar" class="fill engine"></div>
         </div>
       </div>
     </div>
 
-    <div id="welcomeText">
-      Happy Driving, Chief Darek
-    </div>
+    <!-- WELCOME TEXT -->
+    <div id="welcome">Happy Driving, Chief Darek</div>
   </div>
 
 </div>
 
+<script src="script.js"></script>
+
 <script>
-/* ===== RPM ===== */
-const rpmCanvas = document.getElementById("rpmCanvas");
+/* ================= RPM ================= */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
@@ -190,29 +56,39 @@ function drawRPM(v) {
 
   const cx=70, cy=70, r=58;
 
-  ctx.strokeStyle="#173a4f";
-  ctx.lineWidth=4;
+  // ring
+  ctx.strokeStyle="#5a0000";
+  ctx.lineWidth=5;
   ctx.beginPath();
   ctx.arc(cx,cy,r,0,Math.PI*2);
   ctx.stroke();
 
-  for(let i=1;i<=8;i++){
+  // scale + numbers
+  for(let i=0;i<=8;i++){
     const a=(-130+i*32.5)*Math.PI/180;
-    ctx.strokeStyle=i>=7?"#ff6666":"#7fd4ff";
+    ctx.strokeStyle=i>=7?"#ff4444":"#ff9999";
+    ctx.lineWidth=2;
     ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(a)*(r-8),cy+Math.sin(a)*(r-8));
+    ctx.moveTo(cx+Math.cos(a)*(r-6),cy+Math.sin(a)*(r-6));
     ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
     ctx.stroke();
 
-    ctx.fillStyle="#bfe9ff";
-    ctx.font="10px Arial";
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-    ctx.fillText(i,cx+Math.cos(a)*(r-18),cy+Math.sin(a)*(r-18));
+    if(i>0){
+      ctx.fillStyle="#ffdcdc";
+      ctx.font="10px Arial";
+      ctx.textAlign="center";
+      ctx.textBaseline="middle";
+      ctx.fillText(
+        i,
+        cx+Math.cos(a)*(r-16),
+        cy+Math.sin(a)*(r-16)
+      );
+    }
   }
 
+  // needle
   const n=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#4db8ff";
+  ctx.strokeStyle="#ff2a2a";
   ctx.lineWidth=3;
   ctx.beginPath();
   ctx.moveTo(cx,cy);
@@ -220,49 +96,40 @@ function drawRPM(v) {
   ctx.stroke();
 }
 
-/* ===== DATA HOOK ===== */
-let speedMPH = 0;
-let gearRaw = 0;
-let welcomeShown = false;
-let welcomeTimer = null;
+/* ================= HOOKS (UNCHANGED) ================= */
+let speedMPH=0;
+let gearRaw=0;
+let welcomeShown=false;
 
-window.setRPM = v => drawRPM(v);
+window.setRPM=v=>drawRPM(v);
 
-window.setSpeed = s => {
-  speedMPH = Math.round(s * 2.23694);
-  speed.innerText = speedMPH;
-
+window.setSpeed=s=>{
+  speedMPH=Math.round(s*2.23694);
+  speed.innerText=speedMPH;
   updateGear();
 
-  if (speedMPH > 1 && !welcomeShown) {
-    welcomeShown = true;
-    welcomeText.style.opacity = 1;
-
-    welcomeTimer = setTimeout(() => {
-      welcomeText.style.opacity = 0;
-    }, 10000);
-  }
-
-  if (speedMPH === 0) {
-    welcomeShown = false;
-    welcomeText.style.opacity = 0;
-    clearTimeout(welcomeTimer);
+  if(speedMPH>0 && !welcomeShown){
+    welcomeShown=true;
+    welcome.classList.add("show");
+    setTimeout(()=>welcome.classList.remove("show"),10000);
   }
 };
 
-window.setGear = g => {
-  gearRaw = g;
+window.setGear=g=>{
+  gearRaw=g;
   updateGear();
 };
 
-function updateGear() {
-  if (speedMPH === 0) gear.innerText = "N";
-  else if (gearRaw === 0) gear.innerText = "R";
-  else gear.innerText = gearRaw;
+window.setFuel=f=>fuelBar.style.width=(f*100)+"%";
+window.setHealth=h=>engineBar.style.width=(h*100)+"%";
+
+function updateGear(){
+  if(speedMPH===0) gear.innerText="N";
+  else if(gearRaw===0) gear.innerText="R";
+  else gear.innerText=gearRaw;
 }
 
-window.setFuel = f => fuelBar.style.width = (f*100)+"%";
-window.setHealth = h => engineBar.style.width = (h*100)+"%";
+setSpeedMode(1);
 </script>
 
 </body>
