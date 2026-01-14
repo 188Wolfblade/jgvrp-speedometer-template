@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD – Stable</title>
+<title>SUV HUD – Stable A FINAL</title>
 
 <style>
 body {
@@ -11,7 +11,6 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* ===== HUD POSITION ===== */
 #hud {
   position: fixed;
   bottom: 28px;
@@ -38,7 +37,7 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED BOX (SUV) ===== */
+/* ===== SPEED BOX ===== */
 #speedWrap {
   margin-left: 8px;
 }
@@ -76,12 +75,11 @@ body {
   color: #ffffff;
 }
 
-/* UNIT */
-#unit {
-  position: absolute;
-  top: 112px;
-  width: 100%;
-  text-align: center;
+/* ===== FORCE MPH (ANTI HILANG) ===== */
+#speed::after {
+  content: " MPH";
+  display: block;
+  margin-top: 2px;
   font-size: 13px;
   opacity: 0.7;
   letter-spacing: 1px;
@@ -132,17 +130,14 @@ body {
 
 <div id="hud">
 
-  <!-- RPM -->
   <div id="rpmCircle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
-  <!-- SPEED -->
   <div id="speedWrap">
     <div id="speedBox">
       <div id="gear">N</div>
       <div id="speed">0</div>
-      <div id="unit">MPH</div>
 
       <div id="bars">
         <div class="barRow">
@@ -167,7 +162,7 @@ body {
 <script src="script.js"></script>
 
 <script>
-/* ================= RPM DRAW (BMW CORE) ================= */
+/* ===== RPM DRAW (BMW CORE) ===== */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
@@ -177,7 +172,6 @@ window.setRPM = r => {
 
   const cx = 70, cy = 70, rad = 58;
 
-  // ticks + numbers (1–8)
   for (let i = 1; i <= 8; i++) {
     const ang = (-130 + i * 32.5) * Math.PI / 180;
     ctx.strokeStyle = i >= 7 ? "#ff4444" : "#cccccc";
@@ -205,7 +199,6 @@ window.setRPM = r => {
     );
   }
 
-  // needle
   const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
   ctx.strokeStyle = "#ff3b3b";
   ctx.lineWidth = 3;
@@ -218,7 +211,7 @@ window.setRPM = r => {
   ctx.stroke();
 };
 
-/* ================= SPEED & GEAR (BMW EXACT) ================= */
+/* ===== SPEED & GEAR (BMW EXACT) ===== */
 let speedMPH = 0;
 let gearRaw = 0;
 
