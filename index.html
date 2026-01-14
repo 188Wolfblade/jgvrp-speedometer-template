@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD – Stable A FINAL</title>
+<title>SUV HUD – Stable A</title>
 
 <style>
 body {
@@ -64,10 +64,10 @@ body {
   color: #ff3b3b;
 }
 
-/* SPEED */
+/* SPEED (NAIKIN DIKIT) */
 #speed {
   position: absolute;
-  top: 58px;
+  top: 52px; /* sebelumnya 58px */
   width: 100%;
   text-align: center;
   font-size: 46px;
@@ -75,11 +75,11 @@ body {
   color: #ffffff;
 }
 
-/* ===== FORCE MPH (ANTI HILANG) ===== */
+/* MPH – FORCE VIA CSS (NAIKIN JUGA) */
 #speed::after {
   content: " MPH";
   display: block;
-  margin-top: 2px;
+  margin-top: 0px;
   font-size: 13px;
   opacity: 0.7;
   letter-spacing: 1px;
@@ -88,7 +88,7 @@ body {
 /* ===== BARS ===== */
 #bars {
   position: absolute;
-  bottom: 42px;
+  bottom: 56px; /* kasih ruang buat teks bawah */
   width: 82%;
   left: 9%;
 }
@@ -123,6 +123,18 @@ body {
   height: 100%;
   background: linear-gradient(90deg, #ff6666, #ff0000);
 }
+
+/* ===== FOOTER TEXT ===== */
+#footerText {
+  position: absolute;
+  bottom: 18px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  color: #ffffff;
+  opacity: 0.85;
+  letter-spacing: 0.4px;
+}
 </style>
 </head>
 
@@ -130,10 +142,12 @@ body {
 
 <div id="hud">
 
+  <!-- RPM -->
   <div id="rpmCircle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
+  <!-- SPEED -->
   <div id="speedWrap">
     <div id="speedBox">
       <div id="gear">N</div>
@@ -154,6 +168,11 @@ body {
           </div>
         </div>
       </div>
+
+      <div id="footerText">
+        Happy Driving, Chief Darek
+      </div>
+
     </div>
   </div>
 
@@ -162,7 +181,7 @@ body {
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM DRAW (BMW CORE) ===== */
+/* ===== RPM DRAW (BMW CORE – STABLE) ===== */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
