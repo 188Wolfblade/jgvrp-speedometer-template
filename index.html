@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD – Stable BMW Core</title>
+<title>SUV HUD – Stable</title>
 
 <style>
 body {
@@ -11,6 +11,7 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* ===== HUD POSITION ===== */
 #hud {
   position: fixed;
   bottom: 28px;
@@ -23,12 +24,12 @@ body {
 #rpmCircle {
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, #1a0000 40%, #000 75%);
+  position: relative;
   border-radius: 50%;
+  background: radial-gradient(circle, #1a0000 45%, #000 80%);
   box-shadow:
     inset 0 0 18px rgba(255,60,60,0.45),
     0 0 22px rgba(255,60,60,0.35);
-  position: relative;
 }
 
 #rpmCanvas {
@@ -37,45 +38,45 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED ===== */
+/* ===== SPEED BOX (SUV) ===== */
 #speedWrap {
-  margin-left: 6px;
+  margin-left: 8px;
 }
 
-#speedCircle {
+#speedBox {
   width: 220px;
   height: 220px;
-  background: linear-gradient(145deg, #1a0000, #000);
+  position: relative;
   border-radius: 18px;
+  background: linear-gradient(145deg, #1a0000, #000);
   box-shadow:
     inset 0 0 22px rgba(255,60,60,0.45),
     0 0 28px rgba(255,60,60,0.35);
-  position: relative;
 }
 
 /* GEAR */
 #gear {
   position: absolute;
-  top: 22px;
+  top: 20px;
   width: 100%;
   text-align: center;
   font-size: 26px;
-  font-weight: bold;
-  color: #ff4444;
+  font-weight: 900;
+  color: #ff3b3b;
 }
 
 /* SPEED */
 #speed {
   position: absolute;
-  top: 60px;
+  top: 58px;
   width: 100%;
   text-align: center;
   font-size: 46px;
   font-weight: 900;
-  color: #fff;
+  color: #ffffff;
 }
 
-/* MPH */
+/* UNIT */
 #unit {
   position: absolute;
   top: 112px;
@@ -83,6 +84,7 @@ body {
   text-align: center;
   font-size: 13px;
   opacity: 0.7;
+  letter-spacing: 1px;
 }
 
 /* ===== BARS ===== */
@@ -116,7 +118,7 @@ body {
 
 .fillFuel {
   height: 100%;
-  background: linear-gradient(90deg, #ffb347, #ff4444);
+  background: linear-gradient(90deg, #ffb347, #ff3b3b);
 }
 
 .fillEngine {
@@ -130,12 +132,14 @@ body {
 
 <div id="hud">
 
+  <!-- RPM -->
   <div id="rpmCircle">
     <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
+  <!-- SPEED -->
   <div id="speedWrap">
-    <div id="speedCircle">
+    <div id="speedBox">
       <div id="gear">N</div>
       <div id="speed">0</div>
       <div id="unit">MPH</div>
@@ -163,45 +167,86 @@ body {
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM DRAW (BMW EXACT) ===== */
+/* ================= RPM DRAW (BMW CORE) ================= */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
 window.setRPM = r => {
   rpmSmooth += (r - rpmSmooth) * 0.12;
-  ctx.clearRect(0,0,140,140);
+  ctx.clearRect(0, 0, 140, 140);
 
-  const cx=70, cy=70, rad=58;
+  const cx = 70, cy = 70, rad = 58;
 
-  for(let i=1;i<=8;i++){
-    const a=(-130+i*32.5)*Math.PI/180;
-    ctx.strokeStyle=i>=7?"#ff4444":"#ccc";
+  // ticks + numbers (1–8)
+  for (let i = 1; i <= 8; i++) {
+    const ang = (-130 + i * 32.5) * Math.PI / 180;
+    ctx.strokeStyle = i >= 7 ? "#ff4444" : "#cccccc";
+    ctx.lineWidth = 2;
+
     ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(a)*(rad-6), cy+Math.sin(a)*(rad-6));
-    ctx.lineTo(cx+Math.cos(a)*rad, cy+Math.sin(a)*rad);
+    ctx.moveTo(
+      cx + Math.cos(ang) * (rad - 6),
+      cy + Math.sin(ang) * (rad - 6)
+    );
+    ctx.lineTo(
+      cx + Math.cos(ang) * rad,
+      cy + Math.sin(ang) * rad
+    );
     ctx.stroke();
 
-    ctx.fillStyle="#eee";
-    ctx.font="10px Arial";
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
+    ctx.fillStyle = "#eeeeee";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.fillText(
       i,
-      cx+Math.cos(a)*(rad-16),
-      cy+Math.sin(a)*(rad-16)
+      cx + Math.cos(ang) * (rad - 16),
+      cy + Math.sin(ang) * (rad - 16)
     );
   }
 
-  const needle=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#ff4444";
-  ctx.lineWidth=3;
+  // needle
+  const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
+  ctx.strokeStyle = "#ff3b3b";
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+Math.cos(needle)*(rad-12), cy+Math.sin(needle)*(rad-12));
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(
+    cx + Math.cos(needle) * (rad - 12),
+    cy + Math.sin(needle) * (rad - 12)
+  );
   ctx.stroke();
 };
 
-setSpeedMode(1);
+/* ================= SPEED & GEAR (BMW EXACT) ================= */
+let speedMPH = 0;
+let gearRaw = 0;
+
+window.setSpeed = s => {
+  speedMPH = Math.round(s * 2.23694);
+  speed.innerText = speedMPH;
+  updateGear();
+};
+
+window.setGear = g => {
+  gearRaw = g;
+  updateGear();
+};
+
+window.setFuel = f => fuelBar.style.width = (f * 100) + "%";
+window.setHealth = h => engineBar.style.width = (h * 100) + "%";
+
+function updateGear() {
+  if (speedMPH === 0) {
+    gear.innerText = "N";
+  } else if (gearRaw === 0) {
+    gear.innerText = "R";
+  } else {
+    gear.innerText = gearRaw;
+  }
+}
+
+setSpeedMode(1); // MPH
 </script>
 
 </body>
