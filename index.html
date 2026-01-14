@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD – Stable Final</title>
+<title>SUV HUD – Stable BMW Core</title>
 
 <style>
 body {
@@ -21,14 +21,14 @@ body {
 
 /* ===== RPM ===== */
 #rpmCircle {
-  width: 130px;
-  height: 130px;
-  background: #111;
-  border: 4px solid #2a2a2a;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #1a0000 40%, #000 75%);
   border-radius: 50%;
   box-shadow:
-    inset 0 0 18px rgba(255,60,60,0.35),
-    0 0 22px rgba(255,60,60,0.25);
+    inset 0 0 18px rgba(255,60,60,0.45),
+    0 0 22px rgba(255,60,60,0.35);
+  position: relative;
 }
 
 #rpmCanvas {
@@ -37,33 +37,37 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED BOX ===== */
-#speedBox {
-  margin-left: 10px;
-  width: 210px;
-  height: 210px;
-  background: linear-gradient(145deg, #1a0000, #000);
-  border: 3px solid #3a0000;
-  border-radius: 14px;
-  position: relative;
-  box-shadow:
-    inset 0 0 24px rgba(255,40,40,0.35),
-    0 0 26px rgba(255,40,40,0.25);
+/* ===== SPEED ===== */
+#speedWrap {
+  margin-left: 6px;
 }
 
+#speedCircle {
+  width: 220px;
+  height: 220px;
+  background: linear-gradient(145deg, #1a0000, #000);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 22px rgba(255,60,60,0.45),
+    0 0 28px rgba(255,60,60,0.35);
+  position: relative;
+}
+
+/* GEAR */
 #gear {
   position: absolute;
-  top: 16px;
+  top: 22px;
   width: 100%;
   text-align: center;
-  font-size: 28px;
-  font-weight: 900;
-  color: #ff3b3b;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ff4444;
 }
 
+/* SPEED */
 #speed {
   position: absolute;
-  top: 58px;
+  top: 60px;
   width: 100%;
   text-align: center;
   font-size: 46px;
@@ -71,9 +75,10 @@ body {
   color: #fff;
 }
 
+/* MPH */
 #unit {
   position: absolute;
-  top: 110px;
+  top: 112px;
   width: 100%;
   text-align: center;
   font-size: 13px;
@@ -83,9 +88,9 @@ body {
 /* ===== BARS ===== */
 #bars {
   position: absolute;
-  bottom: 26px;
-  width: 84%;
-  left: 8%;
+  bottom: 42px;
+  width: 82%;
+  left: 9%;
 }
 
 .barRow {
@@ -93,6 +98,12 @@ body {
   align-items: center;
   gap: 6px;
   margin-bottom: 6px;
+}
+
+.barIcon {
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
 }
 
 .bar {
@@ -103,30 +114,14 @@ body {
   overflow: hidden;
 }
 
-.fillFuel { background: linear-gradient(90deg, #ffb347, #ff3b3b); height:100% }
-.fillEngine { background: linear-gradient(90deg, #ff5555, #ff0000); height:100% }
-
-/* ===== WELCOME ===== */
-#welcome {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s;
+.fillFuel {
+  height: 100%;
+  background: linear-gradient(90deg, #ffb347, #ff4444);
 }
 
-#welcome.active { opacity: 1; }
-
-#welcome span {
-  color: #ff3b3b;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 1.3px;
-  text-transform: uppercase;
+.fillEngine {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6666, #ff0000);
 }
 </style>
 </head>
@@ -134,76 +129,77 @@ body {
 <body>
 
 <div id="hud">
+
   <div id="rpmCircle">
-    <canvas id="rpmCanvas" width="120" height="120"></canvas>
+    <canvas id="rpmCanvas" width="140" height="140"></canvas>
   </div>
 
-  <div id="speedBox">
-    <div id="gear">N</div>
-    <div id="speed">0</div>
-    <div id="unit">MPH</div>
+  <div id="speedWrap">
+    <div id="speedCircle">
+      <div id="gear">N</div>
+      <div id="speed">0</div>
+      <div id="unit">MPH</div>
 
-    <div id="bars">
-      <div class="barRow">
-        ⛽ <div class="bar"><div id="fuelBar" class="fillFuel"></div></div>
-      </div>
-      <div class="barRow">
-        🔧 <div class="bar"><div id="engineBar" class="fillEngine"></div></div>
-      </div>
-    </div>
+      <div id="bars">
+        <div class="barRow">
+          <span class="barIcon">⛽</span>
+          <div class="bar">
+            <div id="fuelBar" class="fillFuel"></div>
+          </div>
+        </div>
 
-    <div id="welcome">
-      <span>Welcome back, Chief Darek</span>
+        <div class="barRow">
+          <span class="barIcon">🔧</span>
+          <div class="bar">
+            <div id="engineBar" class="fillEngine"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
 </div>
 
 <script src="script.js"></script>
 
 <script>
-/* ===== RPM VISUAL ONLY ===== */
+/* ===== RPM DRAW (BMW EXACT) ===== */
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
 window.setRPM = r => {
   rpmSmooth += (r - rpmSmooth) * 0.12;
-  ctx.clearRect(0,0,120,120);
+  ctx.clearRect(0,0,140,140);
 
-  const cx=60, cy=60, rad=48;
-  for(let i=0;i<=8;i++){
+  const cx=70, cy=70, rad=58;
+
+  for(let i=1;i<=8;i++){
     const a=(-130+i*32.5)*Math.PI/180;
-    ctx.strokeStyle=i>=6?"#ff4444":"#aaa";
+    ctx.strokeStyle=i>=7?"#ff4444":"#ccc";
     ctx.beginPath();
     ctx.moveTo(cx+Math.cos(a)*(rad-6), cy+Math.sin(a)*(rad-6));
     ctx.lineTo(cx+Math.cos(a)*rad, cy+Math.sin(a)*rad);
     ctx.stroke();
+
+    ctx.fillStyle="#eee";
+    ctx.font="10px Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(
+      i,
+      cx+Math.cos(a)*(rad-16),
+      cy+Math.sin(a)*(rad-16)
+    );
   }
 
   const needle=(-130+rpmSmooth*260)*Math.PI/180;
-  ctx.strokeStyle="#ff3b3b";
+  ctx.strokeStyle="#ff4444";
+  ctx.lineWidth=3;
   ctx.beginPath();
   ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+Math.cos(needle)*(rad-10), cy+Math.sin(needle)*(rad-10));
+  ctx.lineTo(cx+Math.cos(needle)*(rad-12), cy+Math.sin(needle)*(rad-12));
   ctx.stroke();
 };
-
-/* ===== WELCOME OBSERVER (SAFE) ===== */
-let lastEngine = false;
-let shown = false;
-
-setInterval(() => {
-  const engineOn = engine?.innerText === "On";
-
-  if (engineOn && !lastEngine && !shown) {
-    welcome.classList.add("active");
-    shown = true;
-
-    setTimeout(() => welcome.classList.remove("active"), 4000);
-  }
-
-  if (!engineOn) shown = false;
-  lastEngine = engineOn;
-}, 300);
 
 setSpeedMode(1);
 </script>
