@@ -17,20 +17,16 @@ body {
 #rpmCircle {
   width: 150px;
   height: 150px;
-  background: #140000;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 16px rgba(255,50,50,0.4),
-    0 0 18px rgba(255,0,0,0.3);
+  background: transparent;
 }
 
 /* SPEED BOX */
 #speedBox {
   width: 200px;
   height: 220px;
-  background: #0e0000;
+  background: #0b0000;
   border: 2px solid #ff2a2a;
-  box-shadow: 0 0 18px rgba(255,0,0,0.35);
+  box-shadow: 0 0 16px rgba(255,0,0,0.35);
   position: relative;
   color: white;
 }
@@ -56,13 +52,12 @@ body {
   text-align: center;
   font-size: 12px;
   opacity: 0.7;
-  margin-top: -2px;
 }
 
 /* Bars */
 #bars {
   position: absolute;
-  bottom: 46px;
+  bottom: 54px;
   width: 80%;
   left: 10%;
 }
@@ -83,7 +78,7 @@ body {
   flex: 1;
   height: 6px;
   background: #2a0000;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -92,25 +87,20 @@ body {
 }
 
 .fill.fuel {
-  background: linear-gradient(90deg,#ff7777,#ff0000);
+  background: linear-gradient(90deg, #ff7777, #ff0000);
 }
 
 .fill.engine {
-  background: linear-gradient(90deg,#ffcc55,#ff4444);
+  background: linear-gradient(90deg, #ffcc55, #ff4444);
 }
 
-/* Welcome Text */
+/* Text */
 #welcome {
   position: absolute;
-  bottom: 12px;
+  bottom: 14px;
   width: 100%;
   text-align: center;
   font-family: "Comic Sans MS", cursive;
   font-size: 12px;
-  opacity: 0;
-  transition: opacity 0.8s;
-}
-
-#welcome.show {
-  opacity: 1;
+  color: white;
 }
