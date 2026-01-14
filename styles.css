@@ -9,100 +9,108 @@ body {
   bottom: 28px;
   right: 28px;
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-end;
 }
 
-/* ===== RPM CIRCLE (OFFROAD) ===== */
+/* RPM */
 #rpmCircle {
   width: 150px;
   height: 150px;
+  background: #140000;
   border-radius: 50%;
-  background:
-    radial-gradient(circle, #2a0000 40%, #000 85%);
   box-shadow:
-    inset 0 0 26px rgba(255,50,50,0.45),
-    0 0 30px rgba(255,40,40,0.35);
-  position: relative;
+    inset 0 0 16px rgba(255,50,50,0.4),
+    0 0 18px rgba(255,0,0,0.3);
 }
 
-/* ===== SPEED PANEL (SUV INSTRUMENT) ===== */
+/* SPEED BOX */
 #speedBox {
-  width: 240px;
-  background:
-    linear-gradient(145deg, #1c0000, #000);
-  border-radius: 14px;
-  padding: 16px;
-  color: white;
+  width: 200px;
+  height: 220px;
+  background: #0e0000;
+  border: 2px solid #ff2a2a;
+  box-shadow: 0 0 18px rgba(255,0,0,0.35);
   position: relative;
-  box-shadow:
-    inset 0 0 0 2px #3a0a0a,
-    inset 0 0 20px rgba(255,60,60,0.35),
-    0 0 28px rgba(255,50,50,0.35);
+  color: white;
 }
 
-/* INNER FRAME */
-#speedBox::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,90,90,0.35);
-  pointer-events: none;
-}
-
-/* GEAR */
+/* Gear */
 #gear {
-  font-size: 30px;
-  font-weight: 900;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: bold;
   color: #ff4444;
-  text-shadow: 0 0 12px #ff3333;
-  margin-bottom: 4px;
 }
 
-/* SPEED */
-#speedWrap {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
+/* Speed */
 #speed {
-  font-size: 52px;
+  text-align: center;
+  font-size: 48px;
   font-weight: 900;
-  letter-spacing: 1px;
+  margin-top: 6px;
 }
 
 #unit {
-  font-size: 13px;
-  opacity: 0.65;
-  letter-spacing: 1px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: -2px;
 }
 
-/* ===== BARS ===== */
+/* Bars */
+#bars {
+  position: absolute;
+  bottom: 46px;
+  width: 80%;
+  left: 10%;
+}
+
 .barRow {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.icon {
+  width: 14px;
   font-size: 12px;
 }
 
 .bar {
   flex: 1;
   height: 6px;
-  background: #330000;
-  border-radius: 6px;
+  background: #2a0000;
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.fillFuel {
+.fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff7777, #ff0000);
 }
 
-.fillEngine {
-  height: 100%;
-  background: linear-gradient(90deg, #ffcc66, #ff3333);
+.fill.fuel {
+  background: linear-gradient(90deg,#ff7777,#ff0000);
+}
+
+.fill.engine {
+  background: linear-gradient(90deg,#ffcc55,#ff4444);
+}
+
+/* Welcome Text */
+#welcome {
+  position: absolute;
+  bottom: 12px;
+  width: 100%;
+  text-align: center;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+#welcome.show {
+  opacity: 1;
 }
