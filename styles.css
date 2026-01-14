@@ -9,7 +9,7 @@ body {
   bottom: 28px;
   right: 28px;
   display: flex;
-  gap: 6px; /* RPM LEBIH DEKAT KE SPEED */
+  gap: 6px;
   align-items: flex-end;
 }
 
@@ -17,6 +17,7 @@ body {
 #rpmCircle {
   width: 150px;
   height: 150px;
+  margin-left: 3px; /* RPM GESER KE KANAN 2–3px */
 }
 
 /* SPEED BOX */
@@ -55,10 +56,10 @@ body {
   margin-top: -2px;
 }
 
-/* Bars – TURUN LAGI */
+/* BARS — BENAR-BENAR DITURUNKAN */
 #bars {
   position: absolute;
-  bottom: 102px; /* LEBIH TURUN */
+  bottom: 48px; /* LEBIH KECIL = TURUN KE BAWAH */
   width: 80%;
   left: 10%;
 }
