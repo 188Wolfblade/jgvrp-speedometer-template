@@ -1,71 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Cruiser Speedometer</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Cruiser Speedometer</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div id="hud">
+<div class="speedometer">
 
-    <!-- RPM -->
-    <div class="rpm-container">
-        <div class="rpm-dial">
-            <div class="ticks"></div>
-            <div class="redline"></div>
-            <div class="needle" id="rpm-needle"></div>
-        </div>
+  <!-- RPM -->
+  <div class="rpm-container">
+    <div class="rpm">
+      <div class="ticks"></div>
+      <div class="needle" id="rpm-needle"></div>
+      <div class="center"></div>
+
+      <!-- labels -->
+      <span class="label l0">0</span>
+      <span class="label l1">1</span>
+      <span class="label l2">2</span>
+      <span class="label l3">3</span>
+      <span class="label l4">4</span>
+      <span class="label l5">5</span>
+      <span class="label l6 red">6</span>
+      <span class="label l7 red">7</span>
     </div>
+  </div>
 
-    <!-- SPEED / GEAR -->
+  <!-- RIGHT SIDE -->
+  <div class="right-panel">
+    <div class="gear" id="gear">N</div>
+
     <div class="speed-box">
-        <div id="gear" class="gear">N</div>
-        <div id="speed" class="speed">0 MPH</div>
+      <div id="speed">0 MPH</div>
     </div>
 
-    <!-- STATUS -->
     <div class="status">
-        <div class="item">
-            ⛽ <span id="fuel">0%</span>
-        </div>
-        <div class="item">
-            ⚙️ <span id="engine">Off</span>
-        </div>
+      <div>⛽ <span id="fuel">100%</span></div>
+      <div>🛠 <span id="engine">On</span></div>
     </div>
-
-    <!-- HIDDEN READERS (ambil data dari script.js kamu) -->
-    <div class="hidden">
-        <span id="rpm"></span>
-    </div>
-
+  </div>
 </div>
 
+<!-- hidden bindings -->
+<div id="rpm" hidden></div>
+<div id="health" hidden></div>
+<div id="headlights" hidden></div>
+<div id="indicators" hidden></div>
+<div id="seatbelts" hidden></div>
+<div id="odometer" hidden></div>
+
 <script>
-/**
- * TANPA UBAH script.js
- * Kita cuma "ngintip" text RPM lalu mapping ke jarum
- */
+/* PURE VISUAL MAPPING (BMW STYLE) */
 const needle = document.getElementById('rpm-needle');
 const rpmText = document.getElementById('rpm');
 
-const MAX_DEG = 240; // sudut total RPM
-const START_DEG = -120;
-
 const observer = new MutationObserver(() => {
-    const val = parseFloat(rpmText.innerText);
-    if (isNaN(val)) return;
-
-    // rpm dari RageMP = 0.0 - 1.0
-    const deg = START_DEG + (val * MAX_DEG);
-    needle.style.transform = `rotate(${deg}deg)`;
+  const v = parseFloat(rpmText.innerText) || 0;
+  const clamped = Math.min(Math.max(v, 0), 1);
+  const deg = -130 + clamped * 260;
+  needle.style.transform = `rotate(${deg}deg)`;
 });
 
-observer.observe(rpmText, {
-    childList: true,
-    characterData: true,
-    subtree: true
-});
+observer.observe(rpmText, { childList: true });
 </script>
 
 </body>
