@@ -1,113 +1,99 @@
-* {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
 body {
-    margin: 0;
-    background: transparent;
+  margin: 0;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  color: white;
 }
 
-/* HUD POSITION */
-#hud {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #fff;
+.speedometer {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  display: flex;
+  gap: 24px;
 }
 
-/* RPM */
-.rpm-container {
-    width: 180px;
-    height: 180px;
-    position: relative;
+.rpm {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: #111;
+  position: relative;
 }
 
-.rpm-dial {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 6px solid rgba(255,255,255,0.15);
-    position: relative;
-}
-
-/* TICKS */
 .ticks {
-    position: absolute;
-    inset: 0;
-    background:
-        repeating-conic-gradient(
-            from -120deg,
-            rgba(255,255,255,0.4) 0deg 2deg,
-            transparent 2deg 12deg
-        );
-    border-radius: 50%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-conic-gradient(
+      from -130deg,
+      #666 0deg 2deg,
+      transparent 2deg 13deg
+    );
+  border-radius: 50%;
 }
 
-/* REDLINE */
-.redline {
-    position: absolute;
-    inset: 0;
-    background:
-        conic-gradient(
-            from -120deg,
-            transparent 0deg 190deg,
-            rgba(255,0,0,0.9) 190deg 240deg
-        );
-    border-radius: 50%;
-}
-
-/* NEEDLE */
 .needle {
-    position: absolute;
-    width: 4px;
-    height: 45%;
-    background: red;
-    top: 50%;
-    left: 50%;
-    transform-origin: bottom center;
-    transform: rotate(-120deg);
-    border-radius: 2px;
+  position: absolute;
+  width: 3px;
+  height: 80px;
+  background: red;
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: rotate(-130deg);
 }
 
-/* SPEED BOX */
-.speed-box {
-    background: rgba(0,0,0,0.6);
-    padding: 12px 18px;
-    border-radius: 10px;
-    min-width: 110px;
-    text-align: center;
+.center {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.label {
+  position: absolute;
+  font-size: 12px;
+}
+
+.l0 { bottom: 8px; left: 50%; transform: translateX(-50%); }
+.l1 { bottom: 30px; left: 20px; }
+.l2 { left: 5px; top: 90px; }
+.l3 { left: 25px; top: 30px; }
+.l4 { top: 5px; left: 50%; transform: translateX(-50%); }
+.l5 { right: 25px; top: 30px; }
+.l6 { right: 5px; top: 90px; }
+.l7 { bottom: 30px; right: 20px; }
+
+.red { color: red; }
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
 }
 
 .gear {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 4px;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
 }
 
-.speed {
-    font-size: 22px;
-    font-weight: bold;
+.speed-box {
+  background: #000;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 22px;
+  text-align: center;
 }
 
-/* STATUS */
 .status {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 14px;
-}
-
-.item {
-    background: rgba(0,0,0,0.45);
-    padding: 6px 10px;
-    border-radius: 6px;
-}
-
-/* HIDDEN */
-.hidden {
-    display: none;
+  font-size: 12px;
+  opacity: 0.85;
 }
