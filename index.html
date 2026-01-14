@@ -2,33 +2,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SUV HUD – Stable A</title>
+<title>Agro SUV HUD Stable A</title>
 
 <style>
 body {
   margin: 0;
   background: transparent;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
+/* ===== HUD WRAP ===== */
 #hud {
   position: fixed;
   bottom: 28px;
   right: 28px;
   display: flex;
   align-items: flex-end;
+  gap: 8px;
 }
 
 /* ===== RPM ===== */
 #rpmCircle {
   width: 150px;
   height: 150px;
-  position: relative;
   border-radius: 50%;
-  background: radial-gradient(circle, #1a0000 45%, #000 80%);
+  background: #0b1b24;
   box-shadow:
-    inset 0 0 18px rgba(255,60,60,0.45),
-    0 0 22px rgba(255,60,60,0.35);
+    inset 0 0 16px rgba(0,160,255,0.45),
+    0 0 20px rgba(0,120,200,0.4);
+  position: relative;
 }
 
 #rpmCanvas {
@@ -37,58 +39,56 @@ body {
   left: 5px;
 }
 
-/* ===== SPEED BOX ===== */
-#speedWrap {
-  margin-left: 8px;
-}
-
-#speedBox {
+/* ===== SPEED ===== */
+#speedCircle {
   width: 220px;
   height: 220px;
-  position: relative;
-  border-radius: 18px;
-  background: linear-gradient(145deg, #1a0000, #000);
+  border-radius: 50%;
+  background: radial-gradient(circle, #0d1f2a 40%, #000 85%);
   box-shadow:
-    inset 0 0 22px rgba(255,60,60,0.45),
-    0 0 28px rgba(255,60,60,0.35);
+    inset 0 0 26px rgba(0,160,255,0.45),
+    0 0 30px rgba(0,140,220,0.35);
+  position: relative;
+  color: white;
 }
 
 /* GEAR */
 #gear {
   position: absolute;
-  top: 20px;
+  top: 22px;
   width: 100%;
   text-align: center;
   font-size: 26px;
-  font-weight: 900;
-  color: #ff3b3b;
+  font-weight: bold;
+  color: #9ddcff;
 }
 
-/* SPEED (NAIKIN DIKIT) */
+/* SPEED */
 #speed {
   position: absolute;
-  top: 52px; /* sebelumnya 58px */
+  top: 64px; /* dinaikkan */
   width: 100%;
   text-align: center;
-  font-size: 46px;
+  font-size: 48px;
   font-weight: 900;
-  color: #ffffff;
+  color: #e8f6ff;
 }
 
-/* MPH – FORCE VIA CSS (NAIKIN JUGA) */
-#speed::after {
-  content: " MPH";
-  display: block;
-  margin-top: 0px;
+/* UNIT */
+#unit {
+  position: absolute;
+  top: 118px; /* ikut naik */
+  width: 100%;
+  text-align: center;
   font-size: 13px;
-  opacity: 0.7;
   letter-spacing: 1px;
+  opacity: 0.7;
 }
 
 /* ===== BARS ===== */
 #bars {
   position: absolute;
-  bottom: 56px; /* kasih ruang buat teks bawah */
+  bottom: 34px; /* DITURUNKAN */
   width: 82%;
   left: 9%;
 }
@@ -97,43 +97,45 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .barIcon {
-  font-size: 12px;
-  width: 14px;
+  font-size: 13px;
+  width: 16px;
   text-align: center;
+  opacity: 0.85;
 }
 
 .bar {
   flex: 1;
   height: 6px;
-  background: #250000;
+  background: #0a2438;
   border-radius: 6px;
   overflow: hidden;
 }
 
 .fillFuel {
   height: 100%;
-  background: linear-gradient(90deg, #ffb347, #ff3b3b);
+  background: linear-gradient(90deg, #4db8ff, #007bff);
 }
 
 .fillEngine {
   height: 100%;
-  background: linear-gradient(90deg, #ff6666, #ff0000);
+  background: linear-gradient(90deg, #6fd0ff, #1aa3ff);
 }
 
-/* ===== FOOTER TEXT ===== */
-#footerText {
+/* ===== TEXT BAWAH ===== */
+#welcomeText {
   position: absolute;
-  bottom: 18px;
+  bottom: 6px;
   width: 100%;
   text-align: center;
-  font-size: 11px;
-  color: #ffffff;
-  opacity: 0.85;
-  letter-spacing: 0.4px;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 12px;
+  color: white;
+  opacity: 0;
+  transition: opacity 1s ease;
 }
 </style>
 </head>
@@ -148,96 +150,104 @@ body {
   </div>
 
   <!-- SPEED -->
-  <div id="speedWrap">
-    <div id="speedBox">
-      <div id="gear">N</div>
-      <div id="speed">0</div>
+  <div id="speedCircle">
+    <div id="gear">N</div>
+    <div id="speed">0</div>
+    <div id="unit">MPH</div>
 
-      <div id="bars">
-        <div class="barRow">
-          <span class="barIcon">⛽</span>
-          <div class="bar">
-            <div id="fuelBar" class="fillFuel"></div>
-          </div>
-        </div>
-
-        <div class="barRow">
-          <span class="barIcon">🔧</span>
-          <div class="bar">
-            <div id="engineBar" class="fillEngine"></div>
-          </div>
+    <div id="bars">
+      <div class="barRow">
+        <span class="barIcon">⛽</span>
+        <div class="bar">
+          <div id="fuelBar" class="fillFuel"></div>
         </div>
       </div>
 
-      <div id="footerText">
-        Happy Driving, Chief Darek
+      <div class="barRow">
+        <span class="barIcon">❤️</span>
+        <div class="bar">
+          <div id="engineBar" class="fillEngine"></div>
+        </div>
       </div>
+    </div>
 
+    <div id="welcomeText">
+      Happy Driving, Chief Darek
     </div>
   </div>
 
 </div>
 
-<script src="script.js"></script>
-
 <script>
-/* ===== RPM DRAW (BMW CORE – STABLE) ===== */
+/* ===== RPM ===== */
+const rpmCanvas = document.getElementById("rpmCanvas");
 const ctx = rpmCanvas.getContext("2d");
 let rpmSmooth = 0;
 
-window.setRPM = r => {
-  rpmSmooth += (r - rpmSmooth) * 0.12;
-  ctx.clearRect(0, 0, 140, 140);
+function drawRPM(v) {
+  rpmSmooth += (v - rpmSmooth) * 0.12;
+  ctx.clearRect(0,0,140,140);
 
-  const cx = 70, cy = 70, rad = 58;
+  const cx=70, cy=70, r=58;
 
-  for (let i = 1; i <= 8; i++) {
-    const ang = (-130 + i * 32.5) * Math.PI / 180;
-    ctx.strokeStyle = i >= 7 ? "#ff4444" : "#cccccc";
-    ctx.lineWidth = 2;
+  ctx.strokeStyle="#173a4f";
+  ctx.lineWidth=4;
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.stroke();
 
+  for(let i=1;i<=8;i++){
+    const a=(-130+i*32.5)*Math.PI/180;
+    ctx.strokeStyle=i>=7?"#ff6666":"#7fd4ff";
     ctx.beginPath();
-    ctx.moveTo(
-      cx + Math.cos(ang) * (rad - 6),
-      cy + Math.sin(ang) * (rad - 6)
-    );
-    ctx.lineTo(
-      cx + Math.cos(ang) * rad,
-      cy + Math.sin(ang) * rad
-    );
+    ctx.moveTo(cx+Math.cos(a)*(r-8),cy+Math.sin(a)*(r-8));
+    ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
     ctx.stroke();
 
-    ctx.fillStyle = "#eeeeee";
-    ctx.font = "10px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(
-      i,
-      cx + Math.cos(ang) * (rad - 16),
-      cy + Math.sin(ang) * (rad - 16)
-    );
+    ctx.fillStyle="#bfe9ff";
+    ctx.font="10px Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(i,cx+Math.cos(a)*(r-18),cy+Math.sin(a)*(r-18));
   }
 
-  const needle = (-130 + rpmSmooth * 260) * Math.PI / 180;
-  ctx.strokeStyle = "#ff3b3b";
-  ctx.lineWidth = 3;
+  const n=(-130+rpmSmooth*260)*Math.PI/180;
+  ctx.strokeStyle="#4db8ff";
+  ctx.lineWidth=3;
   ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(
-    cx + Math.cos(needle) * (rad - 12),
-    cy + Math.sin(needle) * (rad - 12)
-  );
+  ctx.moveTo(cx,cy);
+  ctx.lineTo(cx+Math.cos(n)*(r-12),cy+Math.sin(n)*(r-12));
   ctx.stroke();
-};
+}
 
-/* ===== SPEED & GEAR (BMW EXACT) ===== */
+/* ===== DATA HOOK ===== */
 let speedMPH = 0;
 let gearRaw = 0;
+let welcomeShown = false;
+let welcomeTimer = null;
+
+window.setRPM = v => drawRPM(v);
 
 window.setSpeed = s => {
   speedMPH = Math.round(s * 2.23694);
   speed.innerText = speedMPH;
+
   updateGear();
+
+  if (speedMPH > 1 && !welcomeShown) {
+    welcomeShown = true;
+    welcomeText.style.opacity = 1;
+
+    welcomeTimer = setTimeout(() => {
+      welcomeText.style.opacity = 0;
+    }, 10000);
+  }
+
+  if (speedMPH === 0) {
+    welcomeShown = false;
+    welcomeText.style.opacity = 0;
+    clearTimeout(welcomeTimer);
+  }
 };
 
 window.setGear = g => {
@@ -245,20 +255,14 @@ window.setGear = g => {
   updateGear();
 };
 
-window.setFuel = f => fuelBar.style.width = (f * 100) + "%";
-window.setHealth = h => engineBar.style.width = (h * 100) + "%";
-
 function updateGear() {
-  if (speedMPH === 0) {
-    gear.innerText = "N";
-  } else if (gearRaw === 0) {
-    gear.innerText = "R";
-  } else {
-    gear.innerText = gearRaw;
-  }
+  if (speedMPH === 0) gear.innerText = "N";
+  else if (gearRaw === 0) gear.innerText = "R";
+  else gear.innerText = gearRaw;
 }
 
-setSpeedMode(1); // MPH
+window.setFuel = f => fuelBar.style.width = (f*100)+"%";
+window.setHealth = h => engineBar.style.width = (h*100)+"%";
 </script>
 
 </body>
