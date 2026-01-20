@@ -118,3 +118,20 @@ body {
   font-size: 13px;
   color: white;
 }
+#statusIcons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.icon {
+  opacity: 0.3;
+  font-size: 14px;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.icon.on {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px red);
+}
